@@ -5,8 +5,8 @@ export type SceneId =
 export const SCENE_TIMES: {id: SceneId; from: number; to: number}[] = [
   {id: 'tower', from: 0, to: 31.5},
   {id: 'boardroom', from: 31.5, to: 65.8},
-  {id: 'sos', from: 65.8, to: 78},
-  {id: 'rocket', from: 78, to: 118},
+  {id: 'sos', from: 65.8, to: 72.3},
+  {id: 'rocket', from: 72.3, to: 118},
   {id: 'rocketCar', from: 118, to: 130.2},
   {id: 'crabDebris', from: 130.2, to: 134.6},
   {id: 'slowmo', from: 134.6, to: 151.6},

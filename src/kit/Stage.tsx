@@ -32,8 +32,8 @@ export const CameraRig: React.FC<{keys: CamKey[]; ease?: Ease; shake?: number; f
   const f = frame ?? cf;
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const ch = (sel: (k: CamKey) => number) => interp(f, keys.map((k) => [k.f, sel(k)] as [number, number]), ease);
-  const sx = shake ? (Math.sin(f * 1.7) + Math.sin(f * 2.9)) * 0.5 * shake : 0;
-  const sy = shake ? (Math.sin(f * 2.3) + Math.sin(f * 1.1)) * 0.5 * shake : 0;
+  const sx = shake ? (Math.sin(cf * 1.7) + Math.sin(cf * 2.9)) * 0.5 * shake : 0;
+  const sy = shake ? (Math.sin(cf * 2.3) + Math.sin(cf * 1.1)) * 0.5 * shake : 0;
   camera.position.set(ch((k) => k.pos[0]) + sx, ch((k) => k.pos[1]) + sy, ch((k) => k.pos[2]));
   camera.lookAt(ch((k) => k.look[0]), ch((k) => k.look[1]), ch((k) => k.look[2]));
   const roll = ch((k) => k.roll ?? 0);
