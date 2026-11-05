@@ -5,6 +5,7 @@ import {TowerScene} from './scenes/Tower';
 import {BoardroomScene, SosScene} from './scenes/Boardroom';
 import {RocketScene} from './scenes/Rocket';
 import {RocketCarScene, CrabDebrisScene, SlowmoScene} from './scenes/OpenSource';
+import {OccupationScene} from './scenes/Occupation';
 
 const COMPONENTS: Partial<Record<SceneId, React.FC>> = {
   tower: TowerScene,
@@ -14,6 +15,7 @@ const COMPONENTS: Partial<Record<SceneId, React.FC>> = {
   rocketCar: RocketCarScene,
   crabDebris: CrabDebrisScene,
   slowmo: SlowmoScene,
+  occupation: OccupationScene,
 };
 
 export const SCENES = SCENE_TIMES.map((s) => ({

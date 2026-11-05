@@ -126,6 +126,10 @@ export const Placard: React.FC<PlaneProps & {text: string; red?: boolean}> = ({t
       <boxGeometry args={[0.06, 1.4, 0.04]} />
       <meshBasicMaterial color={PALETTE.ink} />
     </mesh>
-    <CanvasPlane w={1.3} h={0.8} px={200} animate={false} deps={[text, red]} draw={(ctx, w, h) => drawPlacard(ctx, w, h, text, red)} />
+    <mesh position={[0, 0, -0.012]}>
+      <boxGeometry args={[1.3, 0.8, 0.015]} />
+      <meshBasicMaterial color={PALETTE.grey1} />
+    </mesh>
+    <CanvasPlane w={1.3} h={0.8} px={200} animate={false} doubleSide={false} deps={[text, red]} draw={(ctx, w, h) => drawPlacard(ctx, w, h, text, red)} />
   </group>
 );
