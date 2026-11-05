@@ -3,4 +3,3 @@ out/
 .superpowers/
 *.wav
 *.mp3
-!public/*.wav

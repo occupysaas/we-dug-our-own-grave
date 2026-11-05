@@ -1,0 +1,28 @@
+{
+  "name": "we-dug-our-own-grave-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@remotion/cli": "^4.0.541",
+    "@remotion/google-fonts": "^4.0.541",
+    "@remotion/three": "^4.0.541",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.541",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
