@@ -46,7 +46,7 @@ const WALKERS: {outfit: Outfit; speed: number; phase: number; r: [number, number
   {outfit: 'secretary', speed: 0.15, phase: 3.2, r: [5.3, 2.7]},
 ];
 
-export const BoardroomSet: React.FC<{T: number; sos: boolean}> = ({T, sos}) => {
+export const BoardroomSet: React.FC<{T: number; sos: boolean; noSky?: boolean}> = ({T, sos, noSky}) => {
   const f = T * 30;
   const blink = Math.floor(T * 4) % 2 === 0;
   const spitT = 66.6;
@@ -61,10 +61,10 @@ export const BoardroomSet: React.FC<{T: number; sos: boolean}> = ({T, sos}) => {
   };
   return (
     <group>
-      <Sky top={sos ? '#3b0b0b' : '#8fb4dd'} bottom={sos ? '#7a1616' : '#e9eef4'} />
+      {noSky ? null : <Sky top={sos ? '#3b0b0b' : '#8fb4dd'} bottom={sos ? '#7a1616' : '#e9eef4'} />}
       <Lights intensity={sos ? 0.8 : 1} />
       {sos ? <pointLight position={[0, 3.5, 0]} color={blink ? '#ff2020' : '#550000'} intensity={blink ? 40 : 10} distance={20} /> : null}
-      <Floor color="#8b8578" size={30} />
+      {noSky ? <Box size={[14, 0.05, 10]} position={[0, 0, 0]} color="#8b8578" /> : <Floor color="#8b8578" size={30} />}
       {/* walls */}
       <Box size={[14, 4.2, 0.1]} position={[0, 2.1, -5]} color="#ddd6ca" />
       <Box size={[0.1, 4.2, 10]} position={[-7, 2.1, 0]} color="#d3ccbf" />

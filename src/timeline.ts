@@ -3,11 +3,13 @@ import {SCENE_TIMES, SceneId} from './timeline-times';
 import {makePlaceholder} from './scenes/Placeholder';
 import {TowerScene} from './scenes/Tower';
 import {BoardroomScene, SosScene} from './scenes/Boardroom';
+import {RocketScene} from './scenes/Rocket';
 
 const COMPONENTS: Partial<Record<SceneId, React.FC>> = {
   tower: TowerScene,
   boardroom: BoardroomScene,
   sos: SosScene,
+  rocket: RocketScene,
 };
 
 export const SCENES = SCENE_TIMES.map((s) => ({
