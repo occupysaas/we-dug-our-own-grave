@@ -24,6 +24,7 @@
   - Chat bubbles: `Did you know this would happen?` / `You're supposed to be the smartest guy in the world!` / `WE GAVE YOU OUR RAM! YOU GAVE US THE GRAVE!`
   - Secretary: `Umm, sir, the White House is on the line. Someone made a clean-room implementation of the NSA and he wants advice.`
   - Tag card: `Remember, remember, the 5th of November.`
+  - Moon bubble: `One small kernel for mankind, one LLM with open weights.`  Flag: `APACHE 2.0`
 - Deadline: post tonight. Blocking for the whole film comes first (Task 3 renders it end to end), then detail on the ten key gags listed in the spec.
 
 ## Review Focus
@@ -72,8 +73,9 @@ tests/*.test.ts
 | `slowmo` | 134.6–151.6 | launch, rail meet, 1/10 slow-mo, Linus reveal, birds |
 | `occupation` | 151.6–187.8 | Act 4 stock bonk, crowd, crab steals docs, crab toss |
 | `sam` | 187.8–287.8 | Act 5 (sub-beats inside: 221.4 bridge, 246.1 build, 254.5 verse 4) |
-| `celebration` | 287.8–337.4 | Act 6 |
-| `outro` | 337.4–360 | vigil, eye (345.7), smash (~349.0), "No." 349.74, goddess |
+| `celebration` | 287.8–337.4 | Act 6 crowd, towers, crab crowd-surf |
+| `outro` | 337.4–352.6 | vigil, eye (345.7), smash (~349.0), "No." 349.74, goddess |
+| `moon` | 352.6–360 | flat-cartoon moon landing, Apache-2.0 flag, Linus bubble (≥4s) |
 | `tag` | 360–368 | Fawkes card in silence |
 
 ---

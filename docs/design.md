@@ -95,14 +95,15 @@ Sam Altman's office, about 100s, so it's broken into beats:
 ### Act 6: Celebration (4:48–5:37)
 - **4:48–5:02** *Final pre-chorus, soaring.* Back to the crowd. The red-and-black protest crowd swells; placards ("OCCUPY EVERYTHING", "NO MORE SEATS", "FORK IT").
 - **5:02–5:20** *Final chorus, cinematic.* The crowd **tears down the SaaS skyscrapers** (the buildings from the logo topple like dominoes). The open-source rocket car does a **victory lap** overhead. Silence hit on **"we dug—" / "OUR OWN GRAVE!"** (~5:18): the last tower falls.
-- **5:20–5:37** *Final post-chorus, euphoric ("the empire falls but the code is here to stay").* The **crab crowd-surfs**; the cast (Linus, Fawkes, Mickey, Clippy) is in the crowd.
+- **5:20–5:37** *Final post-chorus, euphoric ("the empire falls but the code is here to stay").* The **crab crowd-surfs**; the cast (Linus, Reaper, Mickey, Clippy) is in the crowd.
 
 ### Outro (5:37–6:00)
 - **5:37–5:45** *Music box: "They cut us… we commit / locked us out… we fork it / no more seats, no more fees."* Dusk. Laptops glow in the crowd like vigil candles; the crab sits on someone's shoulders.
 - **5:45–5:49** *Cold voice: "You will own nothing… and be happy."* **Hard cut** to the **red corporate AI eye** filling the frame.
 - **~5:49** *[glitch, silence]* The lens **cracks**; the **Claude crab smashes through** it claw-first, glass flying at camera.
 - **~5:50** *"No."* Through the hole: the **open-source goddess**, warm and glowing, made of code. Pull back to reveal the **crab at a control pedestal puppeteering her** (Wizard of Oz).
-- **5:51–5:59** *"YOU WILL OWN EVERYTHING… AND BE HAPPY!" choir, final chord.* She raises her arms; the camera cranes up over the cheering crowd; **code confetti**. Last "own everything… and be happy" holds on crowd and crab cheering.
+- **5:50–5:52.6** *"YOU WILL OWN EVERYTHING…"* She raises her arms; the camera cranes up over the cheering crowd; **code confetti**.
+- **5:52.6–6:00** *"…AND BE HAPPY!" + final "Own everything… and be happy."* **Moon landing, flat cartoon style (2D)** (user idea, added 2026-11-05): the open-source rocket car lands on the moon; **Linus plants an Apache-2.0-licensed flag**. Chat bubble (held to the end): *"One small kernel for mankind, one LLM with open weights."* Earth in the sky.
 
 ### Tag (6:00–~6:08, total silence)
 - Fade to black. **Guy Fawkes mask fades in, filling the screen.** Text: **"Remember, remember, the 5th of November."** Fade out.
