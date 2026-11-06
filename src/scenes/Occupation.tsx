@@ -5,7 +5,8 @@ import {Person} from '../kit/Person';
 import {Crab} from '../kit/Crab';
 import {Crowd} from '../kit/Crowd';
 import {Bubble, CanvasPlane, Screen} from '../kit/Planes';
-import {Box, Floor, Puff, Sky} from '../kit/Env';
+import {Box, City, Floor, Puff, Sky} from '../kit/Env';
+import {Ground} from '../kit/Ground';
 import {drawChart} from '../kit/draw';
 import {PALETTE} from '../lib/palette';
 import {rng} from '../lib/rng';
@@ -39,7 +40,7 @@ const CAM: CamKey[] = [
   {f: 158.5, pos: [0, 9, 16], look: [0, 1, 0], fov: 50},
   {f: 165.5, pos: [-6, 7, 12], look: [0, 0.5, 0], fov: 48},
   {f: 167.5, pos: [-1.0, 2.0, 4.8], look: [0.3, 0.4, 1.6], fov: 40},
-  {f: 172, pos: [-3.5, 1.6, 6.5], look: [-2, 0.6, 2], fov: 42},
+  {f: 172, pos: [-2.4, 2.3, 4.4], look: [-2, 0.6, 2], fov: 44},
   {f: 176, pos: [-2.4, 1.4, 9.0], look: [-3.5, 3.0, 4.2], fov: 55},
   {f: 187.8, pos: [-2.8, 1.2, 9.8], look: [-3.5, 4.2, 4.2], fov: 60},
 ];
@@ -76,10 +77,11 @@ export const OccupationScene: React.FC = () => {
     {pos: [-0.4, 0, -0.2], rot: 2.5, hair: '#c49a5a'},
   ];
   return (
-    <Stage bg="#f0d8b8">
-      <Sky top={T > 170 ? '#d7141a' : '#e9a26b'} bottom="#f6e2c4" />
+    <Stage bg="#2a1238">
+      <Sky top={T > 170 ? '#5a0a18' : '#1c0d30'} bottom={T > 170 ? '#ff3a4a' : '#ff7a5c'} />
       <Lights warm />
-      <Floor color="#b9a98f" size={300} />
+      <Ground kind="concrete" size={300} tile={5} />
+      <City count={44} seed={79} area={[260, 60]} position={[0, 0, -80]} maxH={95} />
       {rubble.map((b, i) => (
         <Box key={i} size={[b.s, b.s * 0.45, b.s * 0.7]} position={[b.x, b.s * 0.18, b.z]} rotation={[b.rot * 0.2, b.rot, b.rot * 0.15]} color={b.c} />
       ))}

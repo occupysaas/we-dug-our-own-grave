@@ -115,10 +115,11 @@ export const CrabDebrisScene: React.FC = () => {
   const r = rng(77);
   const rubble = Array.from({length: 22}, () => ({x: (r() - 0.5) * 4, y: r() * 0.6, z: (r() - 0.5) * 2 - 0.6, s: 0.3 + r() * 0.6, rot: r() * 3, c: ['#eef1f5', PALETTE.red, '#2b2e36', '#9a948a'][Math.floor(r() * 4)]}));
   return (
-    <Stage bg="#f0d8b8">
-      <Sky top="#e9a26b" bottom="#f6e2c4" />
+    <Stage bg="#2a1238">
+      <Sky top="#1c0d30" bottom="#ff7a5c" />
       <Lights warm />
-      <Floor color="#b9a98f" />
+      <Ground kind="concrete" size={200} tile={4} />
+      <City count={30} seed={78} area={[160, 40]} position={[0, 0, -70]} maxH={80} />
       {rubble.map((b, i) => (
         <Box key={i} size={[b.s, b.s * 0.5, b.s * 0.7]} position={[b.x, b.y * 0.5, b.z]} rotation={[b.rot, b.rot * 2, b.rot * 0.5]} color={b.c} />
       ))}

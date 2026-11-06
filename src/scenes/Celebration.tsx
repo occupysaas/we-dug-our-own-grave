@@ -5,7 +5,8 @@ import {Person} from '../kit/Person';
 import {Crab} from '../kit/Crab';
 import {Crowd} from '../kit/Crowd';
 import {Cutout2D, LogoBadge, CanvasPlane} from '../kit/Planes';
-import {Box, Floor, Puff, Sky} from '../kit/Env';
+import {Box, City, Floor, Puff, Sky} from '../kit/Env';
+import {Ground} from '../kit/Ground';
 import {RocketCar} from '../kit/RocketCar';
 import {Riders} from './OpenSource';
 import {Confetti} from '../kit/Confetti';
@@ -46,20 +47,27 @@ export const CelebrationScene: React.FC = () => {
   const surf = prog(T, 320.5, 337.4);
   const crabX = interp(surf, [[0, -7], [1, 7]]);
   return (
-    <Stage bg={PALETTE.paper}>
-      <Sky top={PALETTE.paper} bottom={PALETTE.paper} />
+    <Stage bg="#2a1238" bloom={0.7} threshold={0.93}>
+      <Sky top="#140a2a" bottom="#ff6a88" />
+      <City count={50} seed={80} area={[320, 60]} position={[0, 0, -110]} maxH={120} />
       <mesh position={[0, 16, -70]}>
         <circleGeometry args={[18, 64]} />
         <meshBasicMaterial color={PALETTE.red} />
       </mesh>
       <Lights />
-      <Floor color="#d9d3c6" size={400} />
+      <Ground kind="street" size={400} tile={16} />
       {/* SaaS towers topple */}
       {TOWERS.map((t, i) => {
         const p = prog(T, t.fall, t.fall + 1.6, easeIn);
         return (
           <group key={t.logo} position={[t.x, 0, -16]} rotation={[-p * 0.25, 0, -p * 1.4]}>
             <Box size={[t.w, t.h, t.w]} position={[0, t.h / 2, 0]} color={PALETTE.ink} />
+            {[[-1, 1], [1, 1]].map(([sx, sz]) => (
+              <mesh key={sx} position={[(sx * t.w) / 2, t.h / 2, (sz * t.w) / 2]}>
+                <boxGeometry args={[0.12, t.h, 0.12]} />
+                <meshBasicMaterial color={i % 2 ? '#ff2bd6' : '#00e5ff'} toneMapped={false} />
+              </mesh>
+            ))}
             {[0.3, 0.55, 0.8].map((k) => (
               <Box key={k} size={[t.w * 0.3, 0.2, 0.1]} position={[t.w * 0.2, t.h * k, t.w / 2 + 0.05]} color="#2a2a2a" />
             ))}

@@ -4,7 +4,7 @@ import {useSongTime} from '../kit/song';
 import {Crab} from '../kit/Crab';
 import {Crowd} from '../kit/Crowd';
 import {CanvasPlane} from '../kit/Planes';
-import {Box, Floor, Sky} from '../kit/Env';
+import {Box, City, Floor, Sky} from '../kit/Env';
 import {Confetti} from '../kit/Confetti';
 import {Stars} from '../kit/Space';
 import {MONO} from '../lib/fonts';
@@ -31,6 +31,7 @@ const Vigil: React.FC<{T: number}> = ({T}) => {
       <Stars count={600} />
       <Lights intensity={0.35} />
       <Floor color="#06060a" size={200} />
+      <City count={40} seed={81} area={[300, 60]} position={[0, 0, -90]} maxH={100} />
       {/* laptops glowing like candles */}
       {[-1, 0, 1].map((k) => (
         <Crowd key={k} count={50} seed={700 + k} area={[14, 10]} t={f * 0.4} cheer={0} position={[k * 14, 0, 0]} placardEvery={0} color="#2a2745" />
