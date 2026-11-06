@@ -5,6 +5,7 @@ import {Crab} from '../kit/Crab';
 import {Person} from '../kit/Person';
 import {LogoBadge, CanvasPlane} from '../kit/Planes';
 import {Box, Bird, City, Floor, Minecart, Rail, Sky, Tower as Skyscraper} from '../kit/Env';
+import {Ground} from '../kit/Ground';
 import {drawCenteredText} from '../kit/draw';
 import {DISPLAY, MONO} from '../lib/fonts';
 import {PALETTE} from '../lib/palette';
@@ -45,8 +46,8 @@ export const TowerScene: React.FC = () => {
   const {T} = useSongTime('tower');
   const exterior = T < 4.3;
   return (
-    <Stage bg="#f6c9a0">
-      <Sky top="#7fa6d6" bottom="#ffd7aa" />
+    <Stage bg="#2a1238">
+      <Sky top="#140a2a" bottom="#ff6a88" />
       <Lights warm />
       {exterior ? <Exterior T={T} /> : <Office T={T} />}
       <CameraRig keys={exterior ? exteriorCam : T < 28.9 ? interiorCam : followCam(T)} frame={T} ease={easeInOut} />
@@ -56,10 +57,11 @@ export const TowerScene: React.FC = () => {
 
 const Exterior: React.FC<{T: number}> = ({T}) => (
   <group>
-    <Skyscraper w={20} h={310} position={[0, -300, 0]} color="#7d93aa" lit={0.2} seed={4} />
+    <Skyscraper w={20} h={310} position={[0, -300, 0]} lit={0.25} seed={4} sign="saasinc" />
     {/* the lit corner office on floor 100 */}
     <Box size={[20.2, 4, 20.2]} position={[0, 1, 0]} color="#ffe3a8" basic />
-    <City count={60} seed={2} area={[500, 500]} position={[0, -300, -100]} maxH={140} />
+    <Ground kind="street" size={1400} tile={40} y={-300} />
+    <City count={80} seed={2} area={[600, 600]} position={[0, -300, -60]} maxH={170} />
     <Bird t={T * 30} position={[interp(T, [[0, -40], [4.3, 30]]), interp(T, [[0, -150], [4.3, 3]]), 18]} scale={3} />
   </group>
 );
@@ -84,8 +86,9 @@ const Office: React.FC<{T: number}> = ({T}) => {
   return (
     <group>
       {/* far below: the city */}
-      <City count={90} seed={5} area={[600, 600]} position={[0, -70, 0]} maxH={95} />
-      <Floor color="#cfc6b6" size={14} />
+      <Ground kind="street" size={1200} tile={30} y={-70} />
+      <City count={110} seed={5} area={[600, 600]} position={[0, -70, 0]} maxH={95} />
+      <Ground kind="wood" size={[14, 9]} tile={3} position={[0, 0.001, -0.5]} />
       {/* ceiling */}
       <Box size={[14, 0.1, 9]} position={[0, 4, -0.5]} color="#e9e4da" />
       {/* back wall covered in swag buttons */}
@@ -103,7 +106,7 @@ const Office: React.FC<{T: number}> = ({T}) => {
       <Box size={[0.15, 0.15, 9]} position={[6.5, 0.05, -0.5]} color="#3a3f47" />
       {/* left wall with sliding door */}
       <Box size={[0.1, 4, 0.7]} position={[-6.5, 2, -3.65]} color="#e4ded3" />
-      <Box size={[0.1, 4, 4.6]} position={[-6.5, 2, 1.2]} color="#e4ded3" />
+      {T < 28.9 ? <Box size={[0.1, 4, 4.6]} position={[-6.5, 2, 1.2]} color="#e4ded3" /> : null}
       <Box size={[0.12, 4, 2.2]} position={[-6.5, 2 + doorOpen * 4, -2.2]} color="#b8b0a2" />
       {/* desk */}
       <Box size={[4.2, 0.12, 1.3]} position={[0.3, 0.9, 0.2]} color="#3a2a20" />
@@ -141,7 +144,7 @@ const Office: React.FC<{T: number}> = ({T}) => {
       {morph > 0.5 ? (
         <>
           <Rail length={7.6} position={[-7.6, 0, -2.2]} />
-          <Rail length={9} position={[-7.5, 0, -2.2]} rotation={[0, 0, Math.PI + 0.6]} />
+          <Rail length={130} position={[-7.5, 0, -2.2]} rotation={[0, 0, Math.PI + 0.6]} />
         </>
       ) : null}
       {/* hologram crab on the desk */}
