@@ -4,9 +4,10 @@ import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
 import {useCurrentFrame, useVideoConfig} from 'remotion';
 import {interp, easeInOut, Ease} from '../lib/anim';
+import {Post} from './Post';
 
 /** Full-frame Three canvas. Children render in a frame-driven scene. */
-export const Stage: React.FC<{children: React.ReactNode; bg?: string; fog?: [string, number, number]}> = ({children, bg = '#111', fog}) => {
+export const Stage: React.FC<{children: React.ReactNode; bg?: string; fog?: [string, number, number]; bloom?: number; threshold?: number; vignette?: number}> = ({children, bg = '#111', fog, bloom = 0.8, threshold = 0.9, vignette = 0.45}) => {
   const {width, height} = useVideoConfig();
   return (
     <ThreeCanvas
@@ -20,6 +21,7 @@ export const Stage: React.FC<{children: React.ReactNode; bg?: string; fog?: [str
       <color attach="background" args={[bg]} />
       {fog ? <fog attach="fog" args={fog} /> : null}
       {children}
+      {bloom > 0 || vignette > 0 ? <Post bloom={bloom} threshold={threshold} vignette={vignette} /> : null}
     </ThreeCanvas>
   );
 };

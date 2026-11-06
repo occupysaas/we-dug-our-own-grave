@@ -35,6 +35,7 @@ export const PhotoHead: React.FC<{which: 'linus' | 'sam'; t: number; size?: numb
           animate={false}
           deps={[img]}
           position={[0, 0, 0.25]}
+          doubleSide={false}
           draw={(ctx, w, h) => {
             ctx.save();
             ctx.beginPath();
@@ -48,13 +49,18 @@ export const PhotoHead: React.FC<{which: 'linus' | 'sam'; t: number; size?: numb
             ctx.restore();
           }}
         />
+        {/* back of the cut-out: hair, so from behind you see a head, not a face */}
+        <mesh position={[0, 0.02, 0.245]} rotation={[0, Math.PI, 0]}>
+          <circleGeometry args={[size * 0.5, 24]} />
+          <meshToonMaterial color={which === 'linus' ? '#8a7356' : '#2b1d16'} />
+        </mesh>
       </group>
     </group>
   );
 };
 
 const Mask: React.FC<{kind: 'anon' | 'fawkes'}> = ({kind}) => (
-  <CanvasPlane w={0.5} h={0.62} px={400} animate={false} deps={[kind]} position={[0, 0, 0.21]} lit draw={(ctx, w, h) => drawFawkes(ctx, w, h, {pale: kind === 'anon'})} />
+  <CanvasPlane w={0.5} h={0.62} px={400} animate={false} deps={[kind]} position={[0, 0, 0.21]} lit doubleSide={false} draw={(ctx, w, h) => drawFawkes(ctx, w, h, {pale: kind === 'anon'})} />
 );
 
 /**

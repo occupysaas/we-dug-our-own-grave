@@ -27,7 +27,7 @@ export function useCanvasTexture(w: number, h: number, draw: (ctx: CanvasRenderi
 const imgCache = new Map<string, HTMLImageElement>();
 
 /** Preload images at module load with delayRender, so 3D components get them synchronously on first render. */
-export const PRELOAD = ['heads/linus.jpg', 'heads/sam.jpg', 'occupysaas.jpg'];
+export const PRELOAD = ['heads/linus.jpg', 'heads/sam.jpg', 'occupysaas.jpg', 'clippy.png'];
 if (typeof window !== 'undefined') {
   for (const path of PRELOAD) {
     const handle = delayRender(`preload ${path}`);

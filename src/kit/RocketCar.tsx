@@ -50,9 +50,24 @@ export const RocketCar: React.FC<{position?: V3; rotation?: V3; scale?: number; 
     {Object.values(SEATS).map((p, i) => (
       <Box key={i} size={[0.55, 0.5, 0.55]} position={[p[0] - 0.25, p[1] + 0.1, p[2]]} color={PALETTE.ink} />
     ))}
-    {/* rail wheels */}
-    {[-1.4, 1.4].map((x) => (
-      <Box key={x} size={[0.5, 0.25, 1.9]} position={[x, 0.05, 0]} color="#3a3a3a" />
+    {/* wheels (fold up in flight) + neon underglow */}
+    {[-1.4, 1.4].flatMap((x) =>
+      [-0.85, 0.85].map((z) => (
+        <mesh key={`${x}${z}`} position={[x, 0.12, z]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.28, 0.28, 0.22, 16]} />
+          <meshToonMaterial color="#1a1a1a" />
+        </mesh>
+      )),
+    )}
+    <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[4.2, 1.9]} />
+      <meshBasicMaterial color="#00e5ff" transparent opacity={0.55} toneMapped={false} />
+    </mesh>
+    {[-0.82, 0.82].map((z) => (
+      <mesh key={'g' + z} position={[0, 0.12, z]}>
+        <boxGeometry args={[4.1, 0.05, 0.03]} />
+        <meshBasicMaterial color="#ff2bd6" toneMapped={false} />
+      </mesh>
     ))}
     {/* logos + signature on both sides */}
     {[1, -1].map((side) => (

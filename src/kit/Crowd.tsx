@@ -3,6 +3,19 @@ import * as THREE from 'three';
 import {crowdLayout} from './pose';
 import {Placard} from './Planes';
 import {PALETTE} from '../lib/palette';
+import {drawFawkes} from './draw';
+
+let maskTex: THREE.CanvasTexture | null = null;
+function fawkesTexture() {
+  if (maskTex) return maskTex;
+  const c = document.createElement('canvas');
+  c.width = 160;
+  c.height = 200;
+  drawFawkes(c.getContext('2d')!, 160, 200);
+  maskTex = new THREE.CanvasTexture(c);
+  maskTex.colorSpace = THREE.SRGBColorSpace;
+  return maskTex;
+}
 
 /** Silhouette shape: head + shoulders + body, like the OccupySaaS logo crowd. */
 function silhouetteShape() {
@@ -24,11 +37,12 @@ const PLACARDS = ['OCCUPY EVERYTHING', 'NO MORE SEATS', 'FORK IT', 'OWN EVERYTHI
 /**
  * Black silhouette protest crowd. Members bob; `cheer` (0..1) adds jumping. Some hold placards / laptops.
  */
-export const Crowd: React.FC<{count: number; seed: number; area: [number, number]; t: number; cheer?: number; placards?: string[]; placardEvery?: number; position?: [number, number, number]; rotation?: [number, number, number]; color?: string; facing?: number}> = ({
-  count, seed, area, t, cheer = 0, placards = PLACARDS, placardEvery = 5, position, rotation, color = PALETTE.ink, facing = 0,
+export const Crowd: React.FC<{count: number; seed: number; area: [number, number]; t: number; cheer?: number; placards?: string[]; placardEvery?: number; position?: [number, number, number]; rotation?: [number, number, number]; color?: string; facing?: number; masks?: boolean}> = ({
+  count, seed, area, t, cheer = 0, placards = PLACARDS, placardEvery = 5, position, rotation, color = PALETTE.ink, facing = 0, masks = true,
 }) => {
   const layout = useMemo(() => crowdLayout(count, seed, area), [count, seed, area]);
   const geo = useMemo(() => new THREE.ExtrudeGeometry(silhouetteShape(), {depth: 0.12, bevelEnabled: false}), []);
+  const mask = useMemo(() => fawkesTexture(), []);
   return (
     <group position={position} rotation={rotation}>
       {layout.map((m, i) => {
@@ -42,6 +56,12 @@ export const Crowd: React.FC<{count: number; seed: number; area: [number, number
             <mesh geometry={geo}>
               <meshBasicMaterial color={color} />
             </mesh>
+            {masks ? (
+              <mesh position={[0, 1.5, 0.135]}>
+                <planeGeometry args={[0.3, 0.38]} />
+                <meshBasicMaterial map={mask} transparent />
+              </mesh>
+            ) : null}
             {hasPlacard ? (
               <Placard text={placards[(i / placardEvery) % placards.length | 0]} red={m.variant === 1} position={[0.15, 2.3 + Math.sin(t * 0.3 + m.phase) * 0.08 * (1 + cheer), 0.15]} rotation={[0, 0, Math.sin(t * 0.2 + m.phase) * 0.1]} scale={0.9} />
             ) : null}

@@ -28,6 +28,20 @@ export function roundRect(ctx: Ctx, x: number, y: number, w: number, h: number, 
   ctx.closePath();
 }
 
+/** Single line of text, shrunk to fit maxW. */
+export function drawFitText(ctx: Ctx, text: string, w: number, h: number, font: string, size: number, color: string, maxW = w * 0.9, weight = '900') {
+  let sz = size;
+  ctx.font = `${weight} ${sz}px ${font}`;
+  while (ctx.measureText(text).width > maxW && sz > 6) {
+    sz -= 1;
+    ctx.font = `${weight} ${sz}px ${font}`;
+  }
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, w / 2, h / 2);
+}
+
 /** Centered multi-line text block. */
 export function drawCenteredText(ctx: Ctx, text: string, w: number, h: number, font: string, size: number, color: string, maxW = w * 0.9, weight = '900') {
   ctx.font = `${weight} ${size}px ${font}`;
@@ -341,7 +355,47 @@ export const BRAND: Record<string, {bg: string; fg: string; label: string}> = {
   google: {bg: '#ffffff', fg: '#4285F4', label: 'G'},
   windows: {bg: '#0078D4', fg: '#fff', label: '⊞'},
   notion: {bg: '#ffffff', fg: '#000', label: 'N'},
+  oracle: {bg: '#C74634', fg: '#fff', label: 'ORACLE'},
+  ibm: {bg: '#1F70C1', fg: '#fff', label: 'IBM'},
+  microsoft: {bg: '#737373', fg: '#fff', label: 'Microsoft'},
+  amazon: {bg: '#131921', fg: '#FF9900', label: 'amazon'},
+  meta: {bg: '#0866FF', fg: '#fff', label: 'Meta'},
+  sap: {bg: '#0FAAFF', fg: '#fff', label: 'SAP'},
+  workday: {bg: '#0875E1', fg: '#F5A623', label: 'workday'},
+  atlassian: {bg: '#0052CC', fg: '#fff', label: 'ATLASSIAN'},
+  slack: {bg: '#4A154B', fg: '#fff', label: 'slack'},
+  zoom: {bg: '#0B5CFF', fg: '#fff', label: 'zoom'},
+  servicenow: {bg: '#032D42', fg: '#62D84E', label: 'servicenow'},
+  snowflake: {bg: '#29B5E8', fg: '#fff', label: 'snowflake'},
+  okta: {bg: '#191919', fg: '#fff', label: 'okta'},
+  twilio: {bg: '#F22F46', fg: '#fff', label: 'twilio'},
+  hubspot: {bg: '#FF7A59', fg: '#fff', label: 'HubSpot'},
+  zendesk: {bg: '#03363D', fg: '#fff', label: 'zendesk'},
+  shopify: {bg: '#95BF47', fg: '#fff', label: 'shopify'},
+  nvidia: {bg: '#111', fg: '#76B900', label: 'NVIDIA'},
+  saasinc: {bg: '#d7141a', fg: '#fff', label: 'SAAS INC.'},
 };
+
+export const CORPS = ['salesforce', 'oracle', 'ibm', 'microsoft', 'amazon', 'meta', 'sap', 'workday', 'atlassian', 'slack', 'zoom', 'servicenow', 'snowflake', 'okta', 'twilio', 'hubspot', 'zendesk', 'shopify', 'nvidia', 'adobecc', 'aws', 'azure', 'docusign', 'databricks', 'auth0', 'google'];
+
+/** Glowing neon sign of a brand name: dark panel, brand-colored glowing text. */
+export function drawNeonSign(ctx: Ctx, w: number, h: number, name: string) {
+  const b = BRAND[name] ?? {bg: '#222', fg: '#fff', label: name};
+  ctx.fillStyle = 'rgba(8,6,14,0.92)';
+  ctx.fillRect(0, 0, w, h);
+  const glow = b.fg === '#fff' || b.fg === '#ffffff' ? b.bg : b.fg;
+  ctx.strokeStyle = glow;
+  ctx.lineWidth = h * 0.06;
+  ctx.shadowColor = glow;
+  ctx.shadowBlur = h * 0.3;
+  ctx.strokeRect(h * 0.08, h * 0.08, w - h * 0.16, h - h * 0.16);
+  ctx.font = `900 ${Math.min(h * 0.55, (w * 1.5) / Math.max(3, b.label.length))}px ${DISPLAY}`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#fff';
+  ctx.fillText(b.label, w / 2, h * 0.53);
+  ctx.shadowBlur = 0;
+}
 
 /** Round swag-button style logo badge. */
 export function drawBadge(ctx: Ctx, w: number, h: number, name: string) {

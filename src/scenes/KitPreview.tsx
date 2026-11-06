@@ -11,7 +11,7 @@ import {PALETTE} from '../lib/palette';
 export const KitPreview: React.FC = () => {
   const t = useCurrentFrame();
   return (
-    <Stage bg={PALETTE.paper}>
+    <Stage bg="#120d1c">
       <CameraRig keys={[{f: 0, pos: [0, 2.4, 11], look: [0, 1.2, 0]}]} />
       <Lights />
       <mesh rotation={[-Math.PI / 2, 0, 0]}>

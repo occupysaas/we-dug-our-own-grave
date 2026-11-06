@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import * as THREE from 'three';
 import {CanvasPlane} from './Planes';
+import {drawNeonSign, CORPS} from './draw';
 import {rng} from '../lib/rng';
 import {PALETTE} from '../lib/palette';
 
@@ -20,48 +21,89 @@ export const Box: React.FC<{size: V3; position?: V3; rotation?: V3; color: strin
   </mesh>
 );
 
-/** Glass skyscraper with a window-grid texture. */
-export const Tower: React.FC<{w: number; h: number; d?: number; position?: V3; color?: string; lit?: number; seed?: number; logo?: React.ReactNode}> = ({w, h, d = w, position, color = '#6f8296', lit = 0.25, seed = 1, logo}) => {
+const NEON = ['#ff2bd6', '#00e5ff', '#ffd400', '#ff6a00', '#7d5cff'];
+
+function windowTexture(seed: number, body: string, lit: number) {
+  const c = document.createElement('canvas');
+  c.width = 256;
+  c.height = 1024;
+  const ctx = c.getContext('2d')!;
+  ctx.fillStyle = body;
+  ctx.fillRect(0, 0, 256, 1024);
+  const r = rng(seed);
+  const style = seed % 3;
+  for (let y = 0; y < 64; y++)
+    for (let x = 0; x < 8; x++) {
+      const on = r() < lit;
+      ctx.fillStyle = on ? ['#ffe7a8', '#9ff3ff', '#ff9ef0', '#c9b8ff'][Math.floor(r() * 4)] : 'rgba(10,12,22,0.75)';
+      if (style === 0) ctx.fillRect(x * 32 + 5, y * 16 + 3, 22, 10);
+      else if (style === 1) ctx.fillRect(x * 32 + 2, y * 16 + 6, 28, 4);
+      else ctx.fillRect(x * 32 + 10, y * 16 + 2, 12, 12);
+    }
+  // horizontal neon bands
+  if (seed % 2 === 0) {
+    ctx.fillStyle = NEON[seed % NEON.length];
+    for (let y = 0; y < 1024; y += 256) ctx.fillRect(0, y + 120, 256, 6);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+/** Cyberpunk skyscraper: varied window textures, neon edge strips, rooftop antenna and an optional corp neon sign. */
+export const Tower: React.FC<{w: number; h: number; d?: number; position?: V3; color?: string; lit?: number; seed?: number; logo?: React.ReactNode; sign?: string; neon?: boolean}> = ({w, h, d = w, position, color, lit = 0.3, seed = 1, logo, sign, neon = true}) => {
+  const body = color ?? ['#1b1826', '#221d2e', '#15161f', '#2a2231', '#1d2230'][seed % 5];
   const tex = useMemo(() => {
-    const c = document.createElement('canvas');
-    c.width = 256;
-    c.height = 1024;
-    const ctx = c.getContext('2d')!;
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, 256, 1024);
-    const r = rng(seed);
-    for (let y = 0; y < 64; y++)
-      for (let x = 0; x < 8; x++) {
-        ctx.fillStyle = r() < lit ? '#ffe7a8' : 'rgba(20,30,45,0.55)';
-        ctx.fillRect(x * 32 + 5, y * 16 + 3, 22, 10);
-      }
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    const t = windowTexture(seed, body, lit);
     t.repeat.set(Math.max(1, w / 3), Math.max(1, h / 30));
     return t;
-  }, [w, h, color, lit, seed]);
+  }, [w, h, body, lit, seed]);
+  const glow = NEON[seed % NEON.length];
   return (
     <group position={position}>
       <mesh position={[0, h / 2, 0]}>
         <boxGeometry args={[w, h, d]} />
         <meshToonMaterial map={tex} />
       </mesh>
+      {neon
+        ? [[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([sx, sz], i) => (
+            <mesh key={i} position={[(sx * w) / 2, h / 2, (sz * d) / 2]}>
+              <boxGeometry args={[0.15, h, 0.15]} />
+              <meshBasicMaterial color={glow} toneMapped={false} />
+            </mesh>
+          ))
+        : null}
+      {neon ? (
+        <mesh position={[0, h + h * 0.04, 0]}>
+          <cylinderGeometry args={[0.08, 0.08, h * 0.08, 6]} />
+          <meshBasicMaterial color="#444" />
+        </mesh>
+      ) : null}
+      {neon ? (
+        <mesh position={[0, h + h * 0.08, 0]}>
+          <sphereGeometry args={[Math.max(0.2, w * 0.04), 8, 6]} />
+          <meshBasicMaterial color="#ff2020" toneMapped={false} />
+        </mesh>
+      ) : null}
+      {sign ? (
+        <CanvasPlane w={w * 0.9} h={w * 0.3} px={Math.min(160, 600 / w)} position={[0, h * 0.86, d / 2 + 0.1]} animate={false} doubleSide={false} deps={[sign]} draw={(ctx, W, H) => drawNeonSign(ctx, W, H, sign)} />
+      ) : null}
       {logo ? <group position={[0, h * 0.9, d / 2 + 0.05]}>{logo}</group> : null}
     </group>
   );
 };
 
-/** Simple city of towers scattered in a ring/area. */
-export const City: React.FC<{count?: number; seed?: number; area?: [number, number]; position?: V3; maxH?: number; color?: string}> = ({count = 40, seed = 9, area = [200, 120], position, maxH = 60, color}) => {
+/** Cyberpunk city of towers; about a third carry a real corp's neon sign facing +z. */
+export const City: React.FC<{count?: number; seed?: number; area?: [number, number]; position?: V3; maxH?: number; color?: string; signs?: boolean}> = ({count = 40, seed = 9, area = [200, 120], position, maxH = 60, color, signs = true}) => {
   const items = useMemo(() => {
     const r = rng(seed);
-    return Array.from({length: count}, () => ({x: (r() - 0.5) * area[0], z: (r() - 0.5) * area[1], w: 4 + r() * 8, h: 10 + r() * maxH, s: Math.floor(r() * 1000)}));
-  }, [count, seed, area, maxH]);
+    return Array.from({length: count}, (_, i) => ({x: (r() - 0.5) * area[0], z: (r() - 0.5) * area[1], w: 4 + r() * 8, h: 10 + r() * maxH, s: Math.floor(r() * 1000), sign: r() < 0.35 ? CORPS[(i + seed) % CORPS.length] : undefined}));
+  }, [count, seed, area[0], area[1], maxH]);
   return (
     <group position={position}>
       {items.map((b, i) => (
-        <Tower key={i} w={b.w} h={b.h} position={[b.x, 0, b.z]} seed={b.s} color={color} />
+        <Tower key={i} w={b.w} h={b.h} position={[b.x, 0, b.z]} seed={b.s} color={color} sign={signs ? b.sign : undefined} />
       ))}
     </group>
   );
