@@ -2,10 +2,12 @@ import React from 'react';
 import {Stage, CameraRig, Lights, CamKey} from '../kit/Stage';
 import {useSongTime} from '../kit/song';
 import {Person} from '../kit/Person';
-import {Bubble, CanvasPlane, LogoBadge, Screen} from '../kit/Planes';
+import {CanvasPlane, LogoBadge, Screen} from '../kit/Planes';
 import {Box, City, Floor, Puff, Sky, Tower} from '../kit/Env';
+import {Ground} from '../kit/Ground';
+import {AbsoluteFill} from 'remotion';
 import {GoldenParachute} from '../kit/Rocket';
-import {drawCenteredText, drawChart, drawChat, ChatMsg, drawBadge} from '../kit/draw';
+import {drawCenteredText, drawChart, drawChat, ChatMsg, drawBadge, drawFitText} from '../kit/draw';
 import {DISPLAY, MONO, MARKER} from '../lib/fonts';
 import {PALETTE} from '../lib/palette';
 import {rng} from '../lib/rng';
@@ -81,11 +83,13 @@ export const SamScene: React.FC = () => {
   const chutes = Array.from({length: 10}, () => ({x: (r() - 0.5) * 160, z: -50 - r() * 90, y0: 30 + r() * 40, ph: r() * 6}));
   const samPose = hide > 0 ? 'hide' : T < 205 ? 'stand' : walk > 0 && walk < 1 ? 'walk' : back > 0 && back < 1 ? 'walk' : 'stand';
   const facing = under ? 1.3 : T < 205 ? (T < 196 ? 0 : -0.9) : atWindow ? Math.PI : back > 0 && back < 1 ? 0 : 0;
+  const bubble = prog(T, 271.6, 272.0, easeOut) * (1 - prog(T, 279.0, 279.4));
   return (
+    <AbsoluteFill>
     <Stage bg="#e9e5dc">
       <Sky top="#4a1a10" bottom="#f08a3c" />
       <Lights intensity={0.9} warm />
-      <Floor color="#d8d2c6" size={18} />
+      <Ground kind="gold" size={[11, 10]} tile={1.6} y={0.002} />
       {/* outside: Silicon Valley burning */}
       <City count={50} seed={14} area={[300, 150]} position={[0, -40, -120]} maxH={60} color="#5b4a44" />
       {fires.map((b, i) => (
@@ -163,7 +167,16 @@ export const SamScene: React.FC = () => {
       {/* shelf (right wall) with trophies that crumble on cue */}
       <Box size={[0.4, 0.08, 9]} position={[5.75, 1.3, 0]} color="#7a5a3a" />
       <Box size={[0.4, 0.08, 9]} position={[5.75, 2.4, 0]} color="#7a5a3a" />
-      {SHELF.map(([t, label, color], i) => {
+      {/* HALL OF SAAS AWARDS sign */}
+      <CanvasPlane w={2.6} h={0.42} px={240} position={[5.94, 0.75, -1.4]} rotation={[0, -Math.PI / 2, 0]} animate={false} doubleSide={false} draw={(ctx, w, h) => {
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = PALETTE.gold;
+        ctx.lineWidth = 6;
+        ctx.strokeRect(4, 4, w - 8, h - 8);
+        drawFitText(ctx, 'HALL OF SAAS AWARDS', w, h, DISPLAY, h * 0.55, PALETTE.gold, w * 0.9);
+      }} />
+      {SHELF.map(([t, label], i) => {
         const crumble = prog(T, t, t + 0.9, easeIn);
         const shelfY = i % 2 ? 2.44 : 1.34;
         const z = -3.8 + i * 0.75;
@@ -171,12 +184,20 @@ export const SamScene: React.FC = () => {
           <group key={label} position={[5.7, shelfY - crumble * shelfY, z]} rotation={[crumble * 1.4, 0, crumble * 0.8]} scale={1 - crumble * 0.6}>
             {crumble < 1 ? (
               <>
-                <Box size={[0.25, 0.5, 0.4]} position={[0, 0.25, 0]} color={color} />
-                <mesh position={[0, 0.62, 0]}><sphereGeometry args={[0.13, 10, 8]} /><meshToonMaterial color={PALETTE.gold} /></mesh>
-                <CanvasPlane w={0.6} h={0.16} px={300} position={[-0.14, 0.12, 0]} rotation={[0, -Math.PI / 2, 0]} animate={false} draw={(ctx, w, h) => { ctx.fillStyle = '#111'; ctx.fillRect(0, 0, w, h); drawCenteredText(ctx, label, w, h, DISPLAY, h * 0.7, PALETTE.gold); }} />
+                {/* golden SaaS award: black base, gold stem, gold cloud */}
+                <Box size={[0.3, 0.14, 0.34]} position={[0, 0.07, 0]} color="#151515" />
+                <mesh position={[0, 0.3, 0]}><cylinderGeometry args={[0.04, 0.07, 0.34, 10]} /><meshToonMaterial color={PALETTE.gold} /></mesh>
+                {[[-0.09, 0.53, 0.09], [0.09, 0.53, 0.09], [0, 0.6, 0.12]].map(([x, y, r], k) => (
+                  <mesh key={k} position={[0, y, x]}><sphereGeometry args={[r, 12, 10]} /><meshToonMaterial color="#f2c94c" emissive="#6b4e12" emissiveIntensity={0.4} /></mesh>
+                ))}
+                <CanvasPlane w={0.32} h={0.11} px={500} position={[-0.155, 0.07, 0]} rotation={[0, -Math.PI / 2, 0]} animate={false} doubleSide={false} draw={(ctx, w, h) => {
+                  ctx.fillStyle = PALETTE.gold;
+                  ctx.fillRect(0, 0, w, h);
+                  drawFitText(ctx, label, w, h, DISPLAY, h * 0.62, '#111', w * 0.9);
+                }} />
               </>
             ) : null}
-            <Puff p={prog(T, t + 0.6, t + 1.6)} position={[0, 0.2, 0]} scale={0.35} color="#bdb6a8" />
+            <Puff p={prog(T, t + 0.6, t + 1.6)} position={[0, 0.2, 0]} scale={0.35} color="#e8c25a" />
           </group>
         );
       })}
@@ -209,11 +230,15 @@ export const SamScene: React.FC = () => {
           <Person t={f} outfit="secretary" head={{hair: '#6b3b20'}} pose={secIn < 1 ? 'walk' : 'stand'} angles={secIn >= 1 ? {spine: 0.5} : undefined} rotation={[0, secIn < 1 ? -Math.PI / 2 : -2.6, 0]} />
         </group>
       ) : null}
-      {T > 271.6 && T < 279.4 ? (
-        <Bubble text="Umm, sir, the White House is on the line. Someone made a clean-room implementation of the NSA and he wants advice." w={2.2} size={0.135} font="mono" position={[1.3, 1.4, 1.3]} rotation={[0, 1.45, 0]} tail="left" />
-      ) : null}
       <CameraRig keys={CAM} frame={T} ease={easeInOut} shake={phones ? 0.01 : 0} />
     </Stage>
+    {bubble > 0 ? (
+      <div style={{position: 'absolute', left: 120, bottom: 70, width: 1000, transform: `scale(${bubble})`, transformOrigin: 'bottom left', background: '#fff', border: '7px solid #111', borderRadius: 34, padding: '28px 36px', fontFamily: MONO, fontWeight: 700, fontSize: 40, lineHeight: 1.3, color: '#111', boxShadow: '0 10px 40px rgba(0,0,0,0.5)'}}>
+        <div style={{fontFamily: DISPLAY, fontWeight: 900, fontSize: 26, color: PALETTE.red, marginBottom: 8}}>SECRETARY</div>
+        Umm, sir, the White House is on the line. Someone made a clean-room implementation of the NSA and he wants advice.
+      </div>
+    ) : null}
+    </AbsoluteFill>
   );
 };
 
