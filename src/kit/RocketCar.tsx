@@ -75,8 +75,6 @@ export const RocketCar: React.FC<{position?: V3; rotation?: V3; scale?: number; 
         {['linux', 'brave', 'ubuntu', 'mint', 'occupysaas'].map((n, i) => (
           <LogoBadge key={n} name={n} size={0.42} position={[-1.6 + i * 0.62, 0.33, 0.83]} />
         ))}
-        <CanvasPlane w={1.6} h={0.36} px={260} position={[1.4, 0.84, 0.83]} doubleSide={false} animate={false} draw={(ctx, w, h) => drawCenteredText(ctx, 'Linus Torvalds', w, h, MARKER, h * 0.62, PALETTE.paper, w, '400')} />
-        <CanvasPlane w={2.2} h={0.22} px={260} position={[-0.7, 0.84, 0.83]} doubleSide={false} animate={false} draw={(ctx, w, h) => drawCenteredText(ctx, 'OPEN SOURCE EXPRESS', w, h, DISPLAY, h * 0.7, PALETTE.paper)} />
       </group>
     ))}
     {children}

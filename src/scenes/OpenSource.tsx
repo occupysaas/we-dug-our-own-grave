@@ -233,9 +233,21 @@ export const SlowmoScene: React.FC = () => {
     camLook = [0, 0.7, 0];
     fov = 50;
   } else if (T < 148) {
-    camPos = add(reaperHead, [oR[0] * 1.8, 0.8, oR[2] * 1.8]);
-    camLook = [0, 0.7, 0];
-    fov = 50;
+    if (T < 145.6) {
+      camPos = add(reaperHead, [oR[0] * 1.8, 0.8, oR[2] * 1.8]);
+      camLook = [0, 0.7, 0];
+      fov = 50;
+    } else {
+      // side-on to the birds' flight so they cross the frame left→right
+      const from = add(reaperHead, [0, -0.1, 0]);
+      const mid = lerp3(from, cart, 0.5);
+      const d: V3s = [cart[0] - from[0], 0, cart[2] - from[2]];
+      const l = Math.hypot(d[0], d[2]);
+      const perp: V3s = [-d[2] / l, 0, d[0] / l];
+      camPos = add(mid, [perp[0] * 3.4, 0.35, perp[2] * 3.4]);
+      camLook = add(mid, [0, -0.05, 0]);
+      fov = 50;
+    }
   } else {
     camPos = [carPos[0] * 1.6, 4 + carLift * 0.6, carPos[2] * 1.6 + 4];
     camLook = [carPos[0] * 0.5, -drop * 0.4 + carLift * 0.5, carPos[2] * 0.5];
@@ -277,12 +289,15 @@ export const SlowmoScene: React.FC = () => {
             );
           })
         : null}
-      {/* two birds thrown in slow-mo */}
+      {/* two birds thrown in slow-mo: mostly level, slightly diagonal, facing where they fly */}
       {birdP > 0 && !after
         ? [0, 1].map((k) => {
             const p = Math.max(0, Math.min(1, birdP * 1.2 - k * 0.2));
-            const pos = lerp3(birdFrom, add(cart, [0, 0.5, 0]), p);
-            return <Bird key={k} t={fv * 6} position={[pos[0], pos[1] + Math.sin(p * Math.PI) * 0.6, pos[2]]} rotation={[0, Math.atan2(-pos[0], -pos[2]) - Math.PI / 2, 0]} scale={1.3} />;
+            const target = add(cart, [k * 0.3 - 0.15, 0.4, 0]);
+            const pos = lerp3(add(birdFrom, [0, 0.15 * k, 0]), target, p);
+            const dir: V3s = [target[0] - birdFrom[0], target[1] - birdFrom[1], target[2] - birdFrom[2]];
+            const yaw = Math.atan2(-dir[2], dir[0]);
+            return <Bird key={k} t={fv * 6} position={[pos[0], pos[1] + Math.sin(p * Math.PI) * 0.15, pos[2]]} rotation={[0, yaw, -0.18]} scale={1.3} />;
           })
         : null}
       {/* slow-mo caption */}
