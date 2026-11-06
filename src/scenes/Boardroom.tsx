@@ -3,7 +3,8 @@ import {Stage, CameraRig, Lights, CamKey} from '../kit/Stage';
 import {useSongTime} from '../kit/song';
 import {Person, Outfit} from '../kit/Person';
 import {Screen, CanvasPlane} from '../kit/Planes';
-import {Box, Floor, Sky} from '../kit/Env';
+import {Box, City, Floor, Sky} from '../kit/Env';
+import {Ground} from '../kit/Ground';
 import {drawChart, drawChat, drawWarning, drawCenteredText, ChatMsg} from '../kit/draw';
 import {mouthOpen} from '../kit/singing';
 import {rng} from '../lib/rng';
@@ -37,13 +38,22 @@ const TICKER: [number, string][] = [
   [59.6, 'ROBOTS AND WORKERS NOW OWN THE THING WE USED TO OWN'],
 ];
 
-// walkers: loop around the table (ellipse)
+// (legacy walkers, unused)
 const WALKERS: {outfit: Outfit; speed: number; phase: number; r: [number, number]}[] = [
   {outfit: 'board', speed: 0.18, phase: 0, r: [5.2, 2.6]},
   {outfit: 'board', speed: 0.16, phase: 2.1, r: [5.4, 2.8]},
   {outfit: 'suit', speed: 0.2, phase: 4.0, r: [5.0, 2.5]},
   {outfit: 'board', speed: 0.17, phase: 1.1, r: [5.6, 3.0]},
   {outfit: 'secretary', speed: 0.15, phase: 3.2, r: [5.3, 2.7]},
+];
+
+const SEATED: {pos: [number, number, number]; rot: number; outfit: Outfit; tie: 'gold' | 'red' | 'none'; hair: string}[] = [
+  {pos: [-2.4, 0, 1.55], rot: Math.PI - 0.2, outfit: 'board', tie: 'gold', hair: '#3b2a20'},
+  {pos: [-1.2, 0, 1.55], rot: Math.PI - 0.1, outfit: 'board', tie: 'gold', hair: '#999'},
+  {pos: [0.0, 0, 1.55], rot: Math.PI + 0.1, outfit: 'suit', tie: 'red', hair: '#111'},
+  {pos: [1.2, 0, 1.55], rot: Math.PI + 0.2, outfit: 'board', tie: 'gold', hair: '#c49a5a'},
+  {pos: [-0.6, 0, -1.55], rot: Math.PI / 2, outfit: 'board', tie: 'gold', hair: '#6b3b20'},
+  {pos: [0.6, 0, -1.55], rot: -Math.PI / 2, outfit: 'board', tie: 'gold', hair: '#777'},
 ];
 
 export const BoardroomSet: React.FC<{T: number; sos: boolean; noSky?: boolean}> = ({T, sos, noSky}) => {
@@ -61,13 +71,23 @@ export const BoardroomSet: React.FC<{T: number; sos: boolean; noSky?: boolean}> 
   };
   return (
     <group>
-      {noSky ? null : <Sky top={sos ? '#3b0b0b' : '#8fb4dd'} bottom={sos ? '#7a1616' : '#e9eef4'} />}
+      {noSky ? null : <Sky top={sos ? '#3b0b0b' : '#140a2a'} bottom={sos ? '#7a1616' : '#ff6a88'} />}
+      {noSky ? null : <Ground kind="street" size={900} tile={30} y={-60} />}
+      {noSky ? null : <City count={50} seed={41} area={[260, 200]} position={[150, -60, 0]} maxH={110} />}
       <Lights intensity={sos ? 0.8 : 1} />
       {sos ? <pointLight position={[0, 3.5, 0]} color={blink ? '#ff2020' : '#550000'} intensity={blink ? 40 : 10} distance={20} /> : null}
-      {noSky ? <Box size={[14, 0.05, 10]} position={[0, 0, 0]} color="#8b8578" /> : <Floor color="#8b8578" size={30} />}
+      <Ground kind="tile" size={[14, 10]} tile={2} y={0.001} />
       {/* walls */}
-      <Box size={[14, 4.2, 0.1]} position={[0, 2.1, -5]} color="#ddd6ca" />
-      <Box size={[0.1, 4.2, 10]} position={[-7, 2.1, 0]} color="#d3ccbf" />
+      <Box size={[14, 4.2, 0.1]} position={[0, 2.1, -5]} color="#2a2630" />
+      <Ground kind="wood" size={[14, 4.2]} tile={2} position={[0, 2.1, -4.94]} rotation={[0, 0, 0]} />
+      <Box size={[0.1, 4.2, 10]} position={[-7, 2.1, 0]} color="#3a2c22" />
+      {/* neon ceiling strips */}
+      {[-2.5, 0, 2.5].map((z) => (
+        <mesh key={z} position={[0, 4.12, z]}>
+          <boxGeometry args={[12, 0.04, 0.08]} />
+          <meshBasicMaterial color={sos ? (blink ? '#ff2020' : '#550000') : '#00e5ff'} toneMapped={false} />
+        </mesh>
+      ))}
       <Box size={[14, 0.1, 10]} position={[0, 4.2, 0]} color="#ebe6dc" />
       {/* windows on the right */}
       {[-4, -1, 2, 5].map((z) => (
@@ -161,16 +181,36 @@ export const BoardroomSet: React.FC<{T: number; sos: boolean; noSky?: boolean}> 
           />
         </group>
       ) : null}
-      {/* walkers */}
-      {WALKERS.map((w, i) => {
-        const sp = sos ? w.speed * 3.2 : w.speed;
-        const a = T * sp + w.phase;
-        const x = Math.cos(a) * w.r[0];
-        const z = Math.sin(a) * w.r[1];
-        const yaw = Math.atan2(-Math.sin(a) * w.r[0], Math.cos(a) * w.r[1]);
-        const pose: Pose = sos ? 'panic' : 'walk';
-        return <Person key={i} t={f + i * 7} outfit={w.outfit} tie={w.outfit === 'board' ? 'gold' : w.outfit === 'suit' ? 'red' : 'none'} pose={pose} position={[x, 0, z]} rotation={[0, Math.PI / 2 - yaw + Math.PI, 0]} head={{hair: ['#3b2a20', '#999', '#c49a5a', '#111', '#6b3b20'][i]}} holding={!sos && i === 1 ? <Box size={[0.4, 0.3, 0.02]} color="#fff" /> : undefined} />;
+      {/* board: seated, talking about the screen; they panic-run in SOS */}
+      {SEATED.map((m, i) => {
+        if (sos) {
+          const sp = 0.55 + i * 0.05;
+          const a = T * sp + i * 1.3;
+          const rx = 5.2 + (i % 3) * 0.25, rz = 2.7 + (i % 2) * 0.2;
+          const x = Math.cos(a) * rx, z = Math.sin(a) * rz;
+          const dx = -Math.sin(a) * rx, dz = Math.cos(a) * rz;
+          return <Person key={i} t={f + i * 7} outfit={m.outfit} tie={m.tie} pose="panic" position={[x, 0, z]} rotation={[0, Math.atan2(dx, dz), 0]} head={{hair: m.hair}} />;
+        }
+        const talking = (Math.floor(T / 2.2) + i) % 3 === 0;
+        return (
+          <Person key={i} t={f + i * 7} outfit={m.outfit} tie={m.tie} pose="sit" position={m.pos} rotation={[0, m.rot + (talking ? Math.sin(f * 0.05) * 0.15 : 0), 0]} head={{hair: m.hair}}
+            angles={talking ? {shoulderR: 0.9 + Math.sin(f * 0.2) * 0.3, elbowR: -0.6, hipL: 1.5, hipR: 1.5, kneeL: -1.5, kneeR: -1.5, bob: -0.42} : undefined}
+            headExtra={talking ? <mesh position={[0, -0.09, 0.19]} scale={[1, 0.2 + Math.abs(Math.sin(f * 0.6)) * 0.8, 1]}><boxGeometry args={[0.09, 0.07, 0.02]} /><meshBasicMaterial color="#3a0d0d" /></mesh> : undefined} />
+        );
       })}
+      {/* presenter at the main screen, pointing and talking */}
+      {!sos ? (
+        <Person t={f} outfit="suit" tie="red" pose="point" position={[3.4, 0, -4.1]} rotation={[0, -2.3 + Math.sin(f * 0.03) * 0.3, 0]} head={{hair: '#c49a5a'}}
+          headExtra={<mesh position={[0, -0.09, 0.19]} scale={[1, 0.2 + Math.abs(Math.sin(f * 0.55)) * 0.8, 1]}><boxGeometry args={[0.09, 0.07, 0.02]} /><meshBasicMaterial color="#3a0d0d" /></mesh>} />
+      ) : null}
+      {/* assistant walking a loop with papers (faces direction of travel) */}
+      {(() => {
+        const sp = sos ? 0.6 : 0.16;
+        const a = T * sp + 2;
+        const x = Math.cos(a) * 5.6, z = Math.sin(a) * 3.1;
+        const dx = -Math.sin(a) * 5.6, dz = Math.cos(a) * 3.1;
+        return <Person t={f} outfit="secretary" pose={sos ? 'panic' : 'walk'} position={[x, 0, z]} rotation={[0, Math.atan2(dx, dz), 0]} head={{hair: '#6b3b20'}} holding={!sos ? <Box size={[0.4, 0.3, 0.02]} color="#fff" /> : undefined} />;
+      })()}
       {/* coffee drinker near the main screen */}
       <group position={[-1.6, 0, -3.6]} rotation={[0, sos ? 0.1 : 0.5, 0]}>
         <Person t={f} outfit="board" tie="gold" pose={T < spitT - 0.2 ? 'sip' : sos ? 'panic' : 'stand'} angles={T >= spitT - 0.2 && T < spitT + 0.8 ? {spine: -0.35, shoulderR: 0.8, elbowR: -1.2} : undefined} rotation={[0, Math.PI, 0]} head={{hair: '#777'}}
