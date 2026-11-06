@@ -91,7 +91,8 @@ export const SamScene: React.FC = () => {
       <Lights intensity={0.9} warm />
       <Ground kind="gold" size={[11, 10]} tile={1.6} y={0.002} />
       {/* outside: Silicon Valley burning */}
-      <City count={50} seed={14} area={[300, 150]} position={[0, -40, -120]} maxH={60} color="#5b4a44" />
+      <Ground kind="street" size={900} tile={30} y={-40} />
+      <City count={50} seed={14} area={[300, 150]} position={[0, -40, -120]} maxH={60} />
       {fires.map((b, i) => (
         <group key={i} position={[b.x, -40, b.z]}>
           <Tower w={b.w} h={b.h} color="#3d302b" lit={0.05} seed={i} />

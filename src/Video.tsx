@@ -6,6 +6,7 @@ import {SCENES} from './timeline';
 import {PALETTE} from './lib/palette';
 import {sec} from './timing/cues';
 import {FontGate} from './FontGate';
+import {Lyrics} from './Lyrics';
 
 /** Whole-frame beat kick (slightly zoomed so edges never show). */
 const BeatShake: React.FC<{children: React.ReactNode}> = ({children}) => {
@@ -26,6 +27,9 @@ export const Video: React.FC = () => (
       ))}
     </FontGate>
     </BeatShake>
+    <FontGate>
+      <Lyrics />
+    </FontGate>
   </AbsoluteFill>
 );
 

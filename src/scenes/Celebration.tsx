@@ -50,10 +50,6 @@ export const CelebrationScene: React.FC = () => {
     <Stage bg="#2a1238" bloom={0.7} threshold={0.93}>
       <Sky top="#140a2a" bottom="#ff6a88" />
       <City count={50} seed={80} area={[320, 60]} position={[0, 0, -110]} maxH={120} />
-      <mesh position={[0, 16, -70]}>
-        <circleGeometry args={[18, 64]} />
-        <meshBasicMaterial color={PALETTE.red} />
-      </mesh>
       <Lights />
       <Ground kind="street" size={400} tile={16} />
       {/* SaaS towers topple */}
