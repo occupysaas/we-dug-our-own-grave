@@ -26,5 +26,7 @@
     "@types/three": "^0.187.0",
     "typescript": "^7.0.2",
     "vitest": "^5.1.0"
-  }
+  },
+  "license": "Apache-2.0",
+  "description": "OccupySaaS theme song music video, built in code with Remotion + Three.js"
 }

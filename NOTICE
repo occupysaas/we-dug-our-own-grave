@@ -1,0 +1,43 @@
+We Dug Our Own Grave — OccupySaaS music video
+Copyright 2026 OccupySaaS
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE),
+EXCEPT for the third-party material listed below, which keeps its own terms.
+
+Third-party material
+--------------------
+
+Photographs (cropped, used as satirical cut-out heads)
+  public/heads/linus.jpg, assets_src/linus.jpg
+    "LinuxCon Europe Linus Torvalds 03 (cropped).jpg" by Krd (photo), Von Sprat (crop)
+    License: CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+    Source: https://commons.wikimedia.org/wiki/File:LinuxCon_Europe_Linus_Torvalds_03_(cropped).jpg
+    The cropped derivative is likewise licensed CC BY-SA 4.0.
+  public/heads/sam.jpg, assets_src/sam.jpg
+    "Sam Altman CropEdit James Tamim.jpg" by TechCrunch
+    License: CC BY 2.0 — https://creativecommons.org/licenses/by/2.0/
+    Source: https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg
+
+Fonts (loaded at render time via @remotion/google-fonts, not redistributed here)
+  Archivo, Permanent Marker, JetBrains Mono — SIL Open Font License 1.1
+
+Trademarks
+  Company and project names and logos (Salesforce, AWS, Azure, Adobe, DocuSign,
+  Auth0, Databricks, Oracle, IBM, Microsoft, Google, NVIDIA, OpenAI, Linux/Tux,
+  Brave, Ubuntu, Mint and others) appear for parody and commentary. They belong
+  to their respective owners, are not licensed by this project, and no
+  endorsement is implied. The Apache License does not grant trademark rights.
+
+Characters and references
+  The mouse cartoon is drawn after the 1928 public-domain "Steamboat Willie" design.
+  The "This is fine" dog is an original drawing in homage to the meme by KC Green.
+  The red AI eye is an original design in homage to HAL 9000.
+
+Hammer & sickle Clippy art (public/clippy.png, hammer_cycle_clippy.webp)
+  By thomasjmeadows (made with OpenAI image generation). Included in this
+  repository under the Apache License 2.0.
+
+Song
+  "We Dug Our Own Grave" by thomasjmeadows (made with Suno) is NOT included in
+  this repository and is not covered by this license. Provide your own copy at
+  public/song.wav to render.
