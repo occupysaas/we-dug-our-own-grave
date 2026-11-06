@@ -8,6 +8,9 @@ import {RocketCarScene, CrabDebrisScene, SlowmoScene} from './scenes/OpenSource'
 import {OccupationScene} from './scenes/Occupation';
 import {SamScene} from './scenes/Sam';
 import {CelebrationScene} from './scenes/Celebration';
+import {OutroScene} from './scenes/Outro';
+import {MoonScene} from './scenes/Moon';
+import {TagScene} from './scenes/Tag';
 
 const COMPONENTS: Partial<Record<SceneId, React.FC>> = {
   tower: TowerScene,
@@ -20,6 +23,9 @@ const COMPONENTS: Partial<Record<SceneId, React.FC>> = {
   occupation: OccupationScene,
   sam: SamScene,
   celebration: CelebrationScene,
+  outro: OutroScene,
+  moon: MoonScene,
+  tag: TagScene,
 };
 
 export const SCENES = SCENE_TIMES.map((s) => ({
