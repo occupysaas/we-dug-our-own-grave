@@ -42,8 +42,10 @@ export const CelebrationScene: React.FC = () => {
   const f = T * 30;
   const swell = prog(T, 287.8, 300, easeOut);
   const fist = prog(T, 292, 296, easeOut);
-  const lap = prog(T, 306, 318);
+  const lap = prog(T, 305, 315);
   const lapA = lap * Math.PI * 2;
+  // after the lap: climb up and away out of frame
+  const exit = prog(T, 315, 319.5, easeIn);
   const surf = prog(T, 320.5, 337.4);
   const crabX = interp(surf, [[0, -7], [1, 7]]);
   return (
@@ -93,8 +95,8 @@ export const CelebrationScene: React.FC = () => {
       ))}
       <Crowd count={50} seed={590} area={[40, 6]} t={f} cheer={1} position={[0, 0, -4]} placardEvery={5} />
       {/* rocket car victory lap */}
-      {lap > 0 && lap < 1 ? (
-        <RocketCar position={[Math.cos(lapA) * 14, 10 + Math.sin(lapA * 2) * 1.5, -4 + Math.sin(lapA) * 8]} rotation={[0, -lapA - Math.PI / 2, 0.25]} flame={1.2}>
+      {lap > 0 && exit < 1 ? (
+        <RocketCar position={[Math.cos(lapA) * 14 - exit * 10, 10 + Math.sin(lapA * 2) * 1.5 + exit * 45, -4 + Math.sin(lapA) * 8 - exit * 30]} rotation={[0, -lapA - Math.PI / 2, 0.25 + exit * 0.7]} flame={1.2 + exit}>
           <Riders t={f} cheer />
         </RocketCar>
       ) : null}

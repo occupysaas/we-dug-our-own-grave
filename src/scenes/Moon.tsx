@@ -50,7 +50,6 @@ export const MoonScene: React.FC = () => {
           <rect x="-250" y="-60" width="440" height="80" rx="18" fill={PALETTE.red} stroke="#000" strokeWidth="10" />
           <path d="M190 -60 L290 -20 L190 20 Z" fill="#111" stroke="#000" strokeWidth="10" />
           <rect x="-230" y="-30" width="400" height="16" fill={PALETTE.paper} />
-          <text x="-30" y="-74" fontFamily={DISPLAY} fontWeight={900} fontSize="30" fill="#fff" stroke="#000" strokeWidth="2" textAnchor="middle">OPEN SOURCE EXPRESS</text>
           {/* crab waving from the car (flat pixel crab) */}
           <g transform={`translate(-120 -120) rotate(${wave * 6})`}>
             <rect x="-45" y="-30" width="90" height="55" fill={PALETTE.crab} stroke="#000" strokeWidth="6" />
