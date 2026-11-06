@@ -78,10 +78,11 @@ export const Person: React.FC<{
   rotation?: V3;
   scale?: number;
   holding?: React.ReactNode; // attached to right hand
+  middleFingers?: boolean; // both hands flip the bird
   hood?: boolean;
   scythe?: boolean;
   headExtra?: React.ReactNode;
-}> = ({outfit = 'suit', tie = 'none', head = {}, pose = 'stand', t, angles, position, rotation, scale = 1, holding, hood, scythe, headExtra}) => {
+}> = ({outfit = 'suit', tie = 'none', head = {}, pose = 'stand', t, angles, position, rotation, scale = 1, holding, hood, scythe, headExtra, middleFingers}) => {
   const a = {...poseAngles(pose, t), ...angles};
   const o = OUTFITS[outfit];
   const skin = 'skin' in head && head.skin ? head.skin : '#e9b99a';
@@ -107,6 +108,12 @@ export const Person: React.FC<{
             <boxGeometry args={[0.1, 0.1, 0.1]} />
             <meshToonMaterial color={robe ? '#e8e4da' : skin} />
           </mesh>
+          {middleFingers ? (
+            <mesh position={[0, -0.47, 0]}>
+              <boxGeometry args={[0.035, 0.16, 0.035]} />
+              <meshToonMaterial color={robe ? '#e8e4da' : skin} />
+            </mesh>
+          ) : null}
           {side === 1 && holding ? <group position={[0, -0.38, 0.05]}>{holding}</group> : null}
         </group>
       </group>

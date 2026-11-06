@@ -18,7 +18,7 @@ import {interp, prog, easeInOut, easeOut, easeIn} from '../lib/anim';
 type V3 = [number, number, number];
 
 /** The four riders. `seated` places them in seats; `t` frame for idle anims; extras control gags. */
-export const Riders: React.FC<{t: number; seated?: boolean; linusMask?: number; linusPose?: 'sit' | 'throw' | 'look'; reaperPose?: 'sit' | 'throw'; cheer?: boolean}> = ({t, seated = true, linusMask = 1, linusPose = 'sit', reaperPose = 'sit', cheer}) => {
+export const Riders: React.FC<{t: number; seated?: boolean; linusMask?: number; linusPose?: 'sit' | 'throw' | 'look'; reaperPose?: 'sit' | 'throw' | 'flip'; cheer?: boolean}> = ({t, seated = true, linusMask = 1, linusPose = 'sit', reaperPose = 'sit', cheer}) => {
   const sit = {hipL: 1.5, hipR: 1.5, kneeL: -1.5, kneeR: -1.5, bob: -0.45};
   return (
     <group>
@@ -27,7 +27,10 @@ export const Riders: React.FC<{t: number; seated?: boolean; linusMask?: number; 
           holding={linusPose === 'throw' ? <mesh><sphereGeometry args={[0.08, 8, 6]} /><meshToonMaterial color="#3d5a2a" /></mesh> : undefined} />
       </group>
       <group position={SEATS.reaper}>
-        <Person t={t} outfit="reaper" head={{mask: 'fawkes'}} scythe={reaperPose !== 'throw'} pose={cheer ? 'cheer' : reaperPose === 'throw' ? 'throw' : 'sit'} angles={seated ? sit : undefined} rotation={[0, Math.PI / 2 + (reaperPose === 'throw' ? 1.2 : 0), 0]} scale={0.8} />
+        <Person t={t} outfit="reaper" head={{mask: 'fawkes'}} scythe={reaperPose === 'sit' && !cheer} pose={cheer ? 'cheer' : reaperPose === 'throw' ? 'throw' : 'sit'} scale={0.8}
+          angles={reaperPose === 'flip' ? {...(seated ? sit : {}), shoulderL: 1.45 + Math.sin(t * 0.35) * 0.08, shoulderR: 1.45 + Math.sin(t * 0.35 + 1) * 0.08, spreadL: 0.25, spreadR: 0.25, elbowL: -1.5, elbowR: -1.5, spine: 0.1} : seated ? sit : undefined}
+          middleFingers={reaperPose === 'flip'}
+          rotation={[0, Math.PI / 2 + (reaperPose !== 'sit' ? 1.3 : 0), 0]} />
       </group>
       <Cutout2D kind="mickey" height={1.3} position={[SEATS.mickey[0], SEATS.mickey[1] + 0.75, SEATS.mickey[2]]} rotation={[0, 0, 0]} />
       <Cutout2D kind="clippy" height={1.1} position={[SEATS.clippy[0], SEATS.clippy[1] + 0.7, SEATS.clippy[2]]} />
@@ -93,11 +96,6 @@ export const RocketCarScene: React.FC = () => {
       {!seatedLinus ? <Person t={f} outfit="hoodie" head={{mask: 'anon'}} pose="walk" position={[interp(lin, [[0, -9], [1, 0.9]]), 0, 2.0 - lin * 1.6]} rotation={[0, Math.PI / 2, 0]} scale={0.8}
         holding={<Box size={[0.4, 0.28, 0.03]} color="#222" />} /> : null}
       {!seatedReaper ? <Person t={f} outfit="reaper" head={{mask: 'fawkes'}} scythe pose="walk" position={[interp(rea, [[0, -10], [1, -0.5]]), 0, 2.2 - rea * 1.8]} rotation={[0, Math.PI / 2, 0]} scale={0.8} /> : null}
-      {/* sack of birds next to the reaper's seat */}
-      <group position={[-1.2, 0.75, -0.7]}>
-        <mesh><sphereGeometry args={[0.28, 10, 8]} /><meshToonMaterial color="#8a6a3e" /></mesh>
-        <Bird t={f} position={[0, 0.35, 0]} scale={0.8} />
-      </group>
       {T > 122 && T < 128 ? <ClippyBalloon w={2.3} position={[-0.6, 2.15, 1.0]} /> : null}
       <CameraRig keys={BOARD_CAM} frame={T} ease={easeInOut} />
     </Stage>
@@ -248,15 +246,15 @@ export const SlowmoScene: React.FC = () => {
       camLook = [0, 0.7, 0];
       fov = 50;
     } else {
-      // side-on to the birds' flight so they cross the frame left→right
-      const from = add(reaperHead, [0, -0.1, 0]);
-      const mid = lerp3(from, cart, 0.5);
-      const d: V3s = [cart[0] - from[0], 0, cart[2] - from[2]];
-      const l = Math.hypot(d[0], d[2]);
-      const perp: V3s = [-d[2] / l, 0, d[0] / l];
-      camPos = add(mid, [perp[0] * 3.4, 0.35, perp[2] * 3.4]);
-      camLook = add(mid, [0, -0.05, 0]);
-      fov = 50;
+      // from the Suit's side, facing the Reaper as he flips him off with both hands
+      const rEuler = new THREE.Euler(0, phi, -0.25);
+      const rHead = new THREE.Vector3(SEATS.reaper[0], SEATS.reaper[1] + 0.85, SEATS.reaper[2]).applyEuler(rEuler);
+      const rFace = new THREE.Vector3(Math.sin(linusYaw), 0, Math.cos(linusYaw)).applyEuler(rEuler);
+      const head: V3s = [carPos[0] + rHead.x, carPos[1] + rHead.y, carPos[2] + rHead.z];
+      const k = prog(T, 145.6, 147.6, easeInOut);
+      camPos = add(head, [rFace.x * (2.6 - k * 0.6), 0.15 + rFace.y, rFace.z * (2.6 - k * 0.6)]);
+      camLook = add(head, [0, -0.05, 0]);
+      fov = 42;
     }
   } else {
     camPos = [carPos[0] * 1.6, 4 + carLift * 0.6, carPos[2] * 1.6 + 4];
@@ -280,7 +278,7 @@ export const SlowmoScene: React.FC = () => {
       <Explosion p={prog(T, 148, 149.4)} position={cart} scale={1.1} />
       {/* the rocket car orbiting */}
       <RocketCar position={carPos} rotation={[after ? -Math.min(0.9, (T - 148.6) * 0.8) : 0, phi, after ? 0 : -0.25]} flame={1 + 0.3 * Math.sin(fv * 1.3)}>
-        <Riders t={fv} linusMask={maskOff > 0 ? 0 : 1} linusPose={T > 143.2 && T < 145.4 ? 'throw' : T > 140.6 && T < 145.4 ? 'look' : 'sit'} reaperPose={T > 145.4 && T < 148 ? 'throw' : 'sit'} cheer={after} />
+        <Riders t={fv} linusMask={maskOff > 0 ? 0 : 1} linusPose={T > 143.2 && T < 145.4 ? 'throw' : T > 140.6 && T < 145.4 ? 'look' : 'sit'} reaperPose={T > 145.4 && T < 148 ? 'flip' : 'sit'} cheer={after} />
       </RocketCar>
       {/* the Anonymous mask peels off his face toward camera and tumbles up/aside in slow-mo */}
       {maskOff > 0 && maskOff < 1 ? (
@@ -312,17 +310,7 @@ export const SlowmoScene: React.FC = () => {
             );
           })
         : null}
-      {/* two birds thrown in slow-mo: mostly level, slightly diagonal, facing where they fly */}
-      {birdP > 0 && !after
-        ? [0, 1].map((k) => {
-            const p = Math.max(0, Math.min(1, birdP * 1.2 - k * 0.2));
-            const target = add(cart, [k * 0.3 - 0.15, 0.4, 0]);
-            const pos = lerp3(add(birdFrom, [0, 0.15 * k, 0]), target, p);
-            const dir: V3s = [target[0] - birdFrom[0], target[1] - birdFrom[1], target[2] - birdFrom[2]];
-            const yaw = Math.atan2(-dir[2], dir[0]);
-            return <Bird key={k} t={fv * 6} position={[pos[0], pos[1] + Math.sin(p * Math.PI) * 0.15, pos[2]]} rotation={[0, yaw, -0.18]} scale={1.3} />;
-          })
-        : null}
+
       {/* slow-mo caption */}
       {T >= 140 && T < 148 ? (
         <CanvasPlane w={0.0001} h={0.0001} px={1} draw={() => {}} />
