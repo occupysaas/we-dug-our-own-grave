@@ -187,11 +187,6 @@ const Office: React.FC<{T: number}> = ({T}) => {
             <sphereGeometry args={[0.24, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
             <meshBasicMaterial color={pressed ? '#ff2a2a' : PALETTE.red} toneMapped={false} />
           </mesh>
-          <CanvasPlane w={0.9} h={0.2} px={300} position={[0, 0.06, 0.34]} animate={false} draw={(ctx, w, h) => {
-            ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, w, h);
-            drawCenteredText(ctx, 'EXPORT HUMAN', w, h, DISPLAY, h * 0.7, '#fff');
-          }} />
         </group>
       ) : null}
       {flash > 0 ? (
