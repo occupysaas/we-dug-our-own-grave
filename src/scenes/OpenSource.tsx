@@ -95,7 +95,7 @@ export const RocketCarScene: React.FC = () => {
         <mesh><sphereGeometry args={[0.28, 10, 8]} /><meshToonMaterial color="#8a6a3e" /></mesh>
         <Bird t={f} position={[0, 0.35, 0]} scale={0.8} />
       </group>
-      {T > 122 && T < 128 ? <Bubble text="Would you like help seizing the means of production?" w={2.8} size={0.24} position={[-0.9, 2.55, 0.6]} /> : null}
+      {T > 122 && T < 128 ? <Bubble text="Would you like help seizing the means of production?" w={2.8} size={0.22} position={[-0.9, 2.05, 0.7]} /> : null}
       <CameraRig keys={BOARD_CAM} frame={T} ease={easeInOut} />
     </Stage>
   );

@@ -57,8 +57,8 @@ const CAM: CamKey[] = [
   {f: 254.6, pos: [0.2, 1.3, 3.2], look: [0, 0.9, 0], fov: 45},
   {f: 255.6, pos: [-0.9, 2.1, 2.0], look: [-4.8, 2.1, -0.2], fov: 50},
   {f: 268.5, pos: [-1.3, 2.1, 1.8], look: [-4.8, 2.1, -0.2], fov: 50},
-  {f: 270.5, pos: [3.3, 1.3, -0.6], look: [0.3, 0.9, 0.5], fov: 52},
-  {f: 279.4, pos: [3.0, 1.2, -0.4], look: [0.3, 0.9, 0.5], fov: 50},
+  {f: 270.5, pos: [4.0, 1.35, -1.0], look: [0.4, 1.0, 0.6], fov: 55},
+  {f: 279.4, pos: [3.7, 1.3, -0.8], look: [0.4, 1.0, 0.6], fov: 53},
 ];
 
 export const SamScene: React.FC = () => {
@@ -199,7 +199,7 @@ export const SamScene: React.FC = () => {
       <group position={[samX, 0, samZ + (under ? 0.1 : 0)]}>
         <Person t={f} outfit="sweater" head={{photo: 'sam'}} pose={samPose as never} rotation={[0, facing, 0]}
           position={[0, under ? interp(samPeek, [[0, 0], [1, 0.25]]) * 0 : 0, 0]}
-          angles={under ? {bob: -0.95 + samPeek * 0.2} : undefined}
+          angles={under ? {bob: -0.95 - samPeek * 0.25} : undefined}
           headExtra={T > 192 && T < 205 ? <CanvasPlane w={0.4} h={0.4} px={200} position={[0.3, 0.45, 0]} animate={false} draw={(ctx, w, h) => drawCenteredText(ctx, '?', w, h, DISPLAY, h * 0.9, PALETTE.red)} /> : null}
         />
       </group>
@@ -210,7 +210,7 @@ export const SamScene: React.FC = () => {
         </group>
       ) : null}
       {T > 271.6 && T < 279.4 ? (
-        <Bubble text="Umm, sir, the White House is on the line. Someone made a clean-room implementation of the NSA and he wants advice." w={2.6} size={0.12} font="mono" position={[1.3, 1.72, 1.25]} rotation={[0, 1.35, 0]} tail="left" />
+        <Bubble text="Umm, sir, the White House is on the line. Someone made a clean-room implementation of the NSA and he wants advice." w={2.2} size={0.135} font="mono" position={[1.3, 1.4, 1.3]} rotation={[0, 1.45, 0]} tail="left" />
       ) : null}
       <CameraRig keys={CAM} frame={T} ease={easeInOut} shake={phones ? 0.01 : 0} />
     </Stage>

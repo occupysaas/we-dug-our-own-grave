@@ -31,7 +31,7 @@ export const MoonScene: React.FC = () => {
           <circle key={i} cx={s.x} cy={s.y} r={s.s * (0.7 + 0.3 * Math.sin(f * 0.1 + i))} fill="#fff" />
         ))}
         {/* earth */}
-        <g transform="translate(1620 190)">
+        <g transform="translate(330 170)">
           <circle r="110" fill="#2d6fb3" stroke="#000" strokeWidth="8" />
           <path d="M-60 -40 q30 -30 60 0 q20 30 -10 50 q-40 10 -50 -50z M20 30 q40 -10 50 30 q-20 30 -50 10z" fill="#4f9a4a" stroke="#000" strokeWidth="5" />
         </g>

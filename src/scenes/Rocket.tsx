@@ -25,6 +25,7 @@ const SPACE_CAM: CamKey[] = [
   {f: 84.0, pos: [12, 8, 24], look: [0, 6, 0], fov: 45},
   {f: 97.5, pos: [-14, 10, 22], look: [0, 6, 0], fov: 45},
   {f: 99.6, pos: [-6, 7, 13], look: [0, 6.5, 0], fov: 45},
+  {f: HIT - 0.25, pos: [-4, 6.5, 10], look: [0, 6.5, 0], fov: 45},
   {f: HIT, pos: [-4, 6.5, 10], look: [0, 6.5, 0], fov: 45},
   {f: HIT + 0.1, pos: [0, 10, 46], look: [0, 6, 0], fov: 50},
   {f: 106, pos: [0, 4, 60], look: [0, 2, 0], fov: 50},
@@ -46,7 +47,7 @@ export const RocketScene: React.FC = () => {
   return (
     <Stage bg={ground ? '#f0d8b8' : '#05060f'}>
       {ground ? <Ground T={T} /> : <Space T={T} />}
-      <CameraRig keys={ground ? GROUND_CAM : SPACE_CAM} frame={T} ease={easeInOut} shake={T > 84 && T < HIT ? (T > 99.6 ? 0.25 : 0.06) : 0} />
+      <CameraRig keys={ground ? GROUND_CAM : SPACE_CAM} frame={T} ease={easeInOut} shake={T > 84 && T < HIT - 0.25 ? (T > 99.6 ? 0.25 : 0.06) : 0} />
     </Stage>
   );
 };
@@ -79,7 +80,7 @@ const Space: React.FC<{T: number}> = ({T}) => {
         }} />
       ) : null}
       {!exploded ? (
-        <CorpRocket flame={1 + 0.2 * Math.sin(f * 0.9)}>
+        <CorpRocket flame={T > HIT - 0.25 ? 0 : 1 + 0.2 * Math.sin(f * 0.9)}>
           <group scale={0.26} position={[0, 0, 0.3]}>
             <BoardroomSet T={T} sos noSky />
           </group>

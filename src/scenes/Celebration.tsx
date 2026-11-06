@@ -22,7 +22,7 @@ const TOWERS: {logo: string; x: number; h: number; w: number; fall: number}[] = 
   {logo: 'aws', x: -3.5, h: 17, w: 5, fall: 307.6},
   {logo: 'google', x: 1.5, h: 15, w: 4, fall: 311.2},
   {logo: 'windows', x: 6, h: 13, w: 3.5, fall: 314.8},
-  {logo: 'notion', x: 10.5, h: 11, w: 3.5, fall: HIT3 - 0.9},
+  {logo: 'notion', x: 10.5, h: 11, w: 3.5, fall: HIT3 - 1.6},
 ];
 
 const CAM: CamKey[] = [
@@ -85,7 +85,7 @@ export const CelebrationScene: React.FC = () => {
       ) : null}
       {/* the crowd swells */}
       {[-1, 0, 1].map((k) => (
-        <Crowd key={k} count={Math.floor(30 + swell * 40)} seed={500 + k} area={[14, 8]} t={f} cheer={T > 302 ? 1 : 0.5} position={[k * 14, 0, 4]} placardEvery={T > 320 ? 9 : 4} />
+        <Crowd key={k} count={Math.floor(30 + swell * 40)} seed={500 + k} area={[14, 8]} t={f} cheer={T > 302 ? 1 : 0.5} position={[k * 14, 0, 4]} placardEvery={6} />
       ))}
       <Crowd count={50} seed={590} area={[40, 6]} t={f} cheer={1} position={[0, 0, -4]} placardEvery={5} />
       {/* rocket car victory lap */}
