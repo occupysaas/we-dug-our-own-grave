@@ -8,7 +8,8 @@ import {Person} from '../kit/Person';
 import {CanvasPlane, LogoBadge, Screen} from '../kit/Planes';
 import {Box, City, Explosion, Floor, Puff, Sky} from '../kit/Env';
 import {Ground as GroundTex} from '../kit/Ground';
-import {drawTux, drawChart} from '../kit/draw';
+import {drawTux, drawChart, drawFlames, drawFineDog} from '../kit/draw';
+import {Bubble} from '../kit/Planes';
 import {MARKER} from '../lib/fonts';
 import {PALETTE} from '../lib/palette';
 import {rng} from '../lib/rng';
@@ -34,7 +35,13 @@ const SPACE_CAM: CamKey[] = [
 const GROUND_CAM: CamKey[] = [
   {f: 106, pos: [0, 6, 30], look: [0, 30, 0], fov: 55},
   {f: 112, pos: [6, 5, 22], look: [0, 6, 0], fov: 50},
-  {f: 118, pos: [10, 4, 14], look: [0, 1.8, 0], fov: 45},
+  {f: 114.2, pos: [8, 3.5, 16], look: [2, 1.6, 2], fov: 45},
+  {f: 115.2, pos: [6.6, 1.9, 8.6], look: [4.2, 1.3, 3.2], fov: 42},
+  {f: 118, pos: [7.4, 2.2, 10.2], look: [3.6, 1.4, 2.8], fov: 46},
+];
+
+const FIRES: [number, number, number, number][] = [
+  [-5, 0, 1, 2.2], [-2, 0, -4.2, 2.8], [2.6, 0, -3.6, 2.4], [5.6, 0, 1.6, 1.8], [6.2, 0, 4.4, 1.6], [2.4, 0, 4.6, 1.4], [-3.4, 0, 4.2, 2.0], [0.4, 0, 2.2, 1.2], [8.6, 0, -1, 2.6], [-8, 0, -2, 2.6],
 ];
 
 const DEBRIS = Array.from({length: 26}, (_, i) => {
@@ -179,6 +186,26 @@ const Ground: React.FC<{T: number}> = ({T}) => {
         }} />
       </group>
       <Puff p={prog(T, 113, 115)} position={[0, 0.5, -2]} scale={2.5} />
+      {/* cartoon fire everywhere */}
+      {FIRES.map(([x, y, z, sz], i) => {
+        const grow = prog(T, 107.5 + i * 0.25, 108.5 + i * 0.25, easeOut);
+        return grow > 0 ? (
+          <CanvasPlane key={i} w={sz * 1.4} h={sz * grow} px={90} position={[x, y + (sz * grow) / 2, z]} rotation={[0, 0.3, 0]} draw={(ctx, w, h, fr) => drawFlames(ctx, w, h, fr, i * 3)} />
+        ) : null;
+      })}
+      <pointLight position={[3, 2, 3]} color="#ff7a1a" intensity={15} distance={18} />
+      {/* "This is fine." */}
+      {T > 113.6 ? (
+        <group position={[4.4, 0, 3.2]} rotation={[0, 0.55, 0]}>
+          <CanvasPlane w={1.8} h={2.3} px={220} position={[0, 1.15, 0]} draw={(ctx, w, h, fr) => {
+            ctx.save();
+            ctx.scale(w / 400, h / 512);
+            drawFineDog(ctx, 400, 512, fr);
+            ctx.restore();
+          }} />
+          {T > 115.0 ? <Bubble text="This is fine." w={1.9} size={0.3} font="marker" position={[-0.2, 2.75, 0.05]} tail="left" /> : null}
+        </group>
+      ) : null}
     </group>
   );
 };

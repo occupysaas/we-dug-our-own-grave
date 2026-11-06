@@ -431,3 +431,94 @@ export function drawTux(ctx: Ctx, cx: number, cy: number, r: number) {
   ctx.beginPath(); ctx.ellipse(cx - r * 0.32, cy + r * 0.95, r * 0.25, r * 0.1, 0, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.ellipse(cx + r * 0.32, cy + r * 0.95, r * 0.25, r * 0.1, 0, 0, Math.PI * 2); ctx.fill();
 }
+
+/** Cartoon flames (animated by t). */
+export function drawFlames(ctx: Ctx, w: number, h: number, t: number, seed = 0) {
+  const tongues = 7;
+  for (let layer = 0; layer < 3; layer++) {
+    ctx.fillStyle = ['#e2361b', '#ff8a1c', '#ffd23a'][layer];
+    ctx.strokeStyle = '#2a0a00';
+    ctx.lineWidth = layer === 0 ? 5 : 0;
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    for (let i = 0; i <= tongues; i++) {
+      const x = (i / tongues) * w;
+      const ph = t * 0.35 + i * 1.7 + seed;
+      const top = h * (0.12 + layer * 0.22 + 0.12 * Math.sin(ph) + 0.06 * Math.sin(ph * 2.3));
+      const xm = x - w / tongues / 2;
+      if (i > 0) ctx.quadraticCurveTo(xm + Math.sin(ph) * 8, top, x, h * (0.55 + layer * 0.12));
+    }
+    ctx.lineTo(w, h);
+    ctx.closePath();
+    ctx.fill();
+    if (layer === 0) ctx.stroke();
+  }
+}
+
+/** "This is fine" homage: cartoon dog in a bowler hat at a little table with a coffee mug. */
+export function drawFineDog(ctx: Ctx, w: number, h: number, t: number) {
+  const s = w / 400;
+  const ink = '#1b1208';
+  const fur = '#e9b85c';
+  ctx.lineWidth = 6 * s;
+  ctx.strokeStyle = ink;
+  ctx.lineJoin = 'round';
+  // chair back
+  ctx.fillStyle = '#8a5a33';
+  ctx.fillRect(40 * s, 230 * s, 30 * s, 220 * s);
+  ctx.strokeRect(40 * s, 230 * s, 30 * s, 220 * s);
+  // body
+  ctx.fillStyle = fur;
+  ctx.beginPath();
+  ctx.ellipse(150 * s, 360 * s, 85 * s, 105 * s, 0, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+  // table
+  ctx.fillStyle = '#9b6a3d';
+  ctx.fillRect(210 * s, 340 * s, 170 * s, 22 * s);
+  ctx.strokeRect(210 * s, 340 * s, 170 * s, 22 * s);
+  ctx.fillRect(285 * s, 362 * s, 18 * s, 150 * s);
+  ctx.strokeRect(285 * s, 362 * s, 18 * s, 150 * s);
+  // mug (sip bob)
+  const sip = Math.max(0, Math.sin(t * 0.08)) * 18 * s;
+  ctx.fillStyle = '#f4f1ea';
+  ctx.fillRect(240 * s, (290 * s) - sip, 50 * s, 50 * s);
+  ctx.strokeRect(240 * s, (290 * s) - sip, 50 * s, 50 * s);
+  ctx.beginPath(); ctx.arc(295 * s, 315 * s - sip, 14 * s, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+  // arm to mug
+  ctx.fillStyle = fur;
+  ctx.beginPath();
+  ctx.ellipse(215 * s, 320 * s - sip / 2, 45 * s, 18 * s, -0.3, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+  // head
+  ctx.beginPath();
+  ctx.ellipse(160 * s, 200 * s, 78 * s, 66 * s, 0, 0, Math.PI * 2);
+  ctx.fill(); ctx.stroke();
+  // ears
+  ctx.fillStyle = '#7a4a22';
+  for (const sx of [-1, 1]) {
+    ctx.beginPath();
+    ctx.ellipse((160 + sx * 72) * s, 215 * s, 22 * s, 48 * s, sx * 0.3, 0, Math.PI * 2);
+    ctx.fill(); ctx.stroke();
+  }
+  // snout
+  ctx.fillStyle = '#f3d394';
+  ctx.beginPath(); ctx.ellipse(185 * s, 225 * s, 42 * s, 28 * s, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = ink;
+  ctx.beginPath(); ctx.ellipse(215 * s, 215 * s, 10 * s, 8 * s, 0, 0, Math.PI * 2); ctx.fill();
+  // eyes (calm, slightly glazed)
+  for (const ex of [135, 175]) {
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.ellipse(ex * s, 185 * s, 12 * s, 14 * s, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = ink;
+    ctx.beginPath(); ctx.arc((ex + 3) * s, 188 * s, 5 * s, 0, Math.PI * 2); ctx.fill();
+    ctx.lineWidth = 4 * s;
+    ctx.beginPath(); ctx.moveTo((ex - 13) * s, 178 * s); ctx.lineTo((ex + 13) * s, 178 * s); ctx.stroke();
+    ctx.lineWidth = 6 * s;
+  }
+  // content little smile
+  ctx.beginPath(); ctx.arc(185 * s, 230 * s, 18 * s, 0.2, Math.PI - 0.2); ctx.stroke();
+  // bowler hat
+  ctx.fillStyle = '#2c2a28';
+  ctx.beginPath(); ctx.ellipse(160 * s, 142 * s, 80 * s, 14 * s, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(160 * s, 120 * s, 50 * s, 38 * s, 0, Math.PI, 0); ctx.lineTo(210 * s, 140 * s); ctx.lineTo(110 * s, 140 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+}
