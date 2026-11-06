@@ -6,7 +6,8 @@ import {CorpRocket, GoldenParachute} from '../kit/Rocket';
 import {Stars, Planet} from '../kit/Space';
 import {Person} from '../kit/Person';
 import {CanvasPlane, LogoBadge, Screen} from '../kit/Planes';
-import {Box, Explosion, Floor, Puff, Sky} from '../kit/Env';
+import {Box, City, Explosion, Floor, Puff, Sky} from '../kit/Env';
+import {Ground as GroundTex} from '../kit/Ground';
 import {drawTux, drawChart} from '../kit/draw';
 import {MARKER} from '../lib/fonts';
 import {PALETTE} from '../lib/palette';
@@ -18,15 +19,15 @@ const HIT = cue('hit1'); // 101.7
 const JUMPS = [85.0, 87.4, 89.8, 92.2, 94.6, 97.0];
 
 const SPACE_CAM: CamKey[] = [
-  {f: 72.3, pos: [0, 5.6, 4.2], look: [0, 4.6, 0], fov: 50},
-  {f: 75.5, pos: [10, 9, 26], look: [0, 6, 0], fov: 45},
+  {f: 72.3, pos: [0, 5.4, 5.2], look: [0, 4.4, 0], fov: 50},
+  {f: 75.5, pos: [14, 10, 34], look: [0, 7, 0], fov: 45},
   {f: 78.2, pos: [16, 14, 22], look: [40, -60, -120], fov: 45},
   {f: 82.5, pos: [16, 14, 22], look: [40, -60, -120], fov: 45},
-  {f: 84.0, pos: [12, 8, 24], look: [0, 6, 0], fov: 45},
-  {f: 97.5, pos: [-14, 10, 22], look: [0, 6, 0], fov: 45},
-  {f: 99.6, pos: [-6, 7, 13], look: [0, 6.5, 0], fov: 45},
-  {f: HIT - 0.25, pos: [-4, 6.5, 10], look: [0, 6.5, 0], fov: 45},
-  {f: HIT, pos: [-4, 6.5, 10], look: [0, 6.5, 0], fov: 45},
+  {f: 84.0, pos: [16, 9, 32], look: [0, 7, 0], fov: 45},
+  {f: 97.5, pos: [-18, 11, 30], look: [0, 7, 0], fov: 45},
+  {f: 99.6, pos: [-8, 8, 18], look: [0, 7, 0], fov: 45},
+  {f: HIT - 0.25, pos: [-6, 7, 14], look: [0, 7, 0], fov: 45},
+  {f: HIT, pos: [-6, 7, 14], look: [0, 7, 0], fov: 45},
   {f: HIT + 0.1, pos: [0, 10, 46], look: [0, 6, 0], fov: 50},
   {f: 106, pos: [0, 4, 60], look: [0, 2, 0], fov: 50},
 ];
@@ -45,7 +46,7 @@ export const RocketScene: React.FC = () => {
   const {T} = useSongTime('rocket');
   const ground = T >= 106;
   return (
-    <Stage bg={ground ? '#f0d8b8' : '#05060f'}>
+    <Stage bg={ground ? '#2a1238' : '#05060f'} bloom={0.6} threshold={0.97}>
       {ground ? <Ground T={T} /> : <Space T={T} />}
       <CameraRig keys={ground ? GROUND_CAM : SPACE_CAM} frame={T} ease={easeInOut} shake={T > 84 && T < HIT - 0.25 ? (T > 99.6 ? 0.25 : 0.06) : 0} />
     </Stage>
@@ -93,7 +94,7 @@ const Space: React.FC<{T: number}> = ({T}) => {
         const side = i % 2 ? 1 : -1;
         const x = side * (1 + dt * 1.6);
         const y = 5 - dt * 1.1 + Math.min(dt, 0.6) * 2;
-        const z = 1.8 + dt * 2.2;
+        const z = 2.8 + dt * 2.2;
         const open = prog(dt, 0.6, 1.2, easeOut);
         return (
           <group key={j} position={[x, y, z]} scale={0.6}>
@@ -131,10 +132,10 @@ const Ground: React.FC<{T: number}> = ({T}) => {
   const screenLanded = T >= 113;
   return (
     <group>
-      <Sky top="#e9a26b" bottom="#f6e2c4" />
+      <Sky top="#1c0d30" bottom="#ff7a5c" />
       <Lights warm />
-      <fog attach="fog" args={['#f0d8b8', 40, 160]} />
-      <Floor color="#b9a98f" size={400} />
+      <GroundTex kind="concrete" size={400} tile={6} />
+      <City count={40} seed={77} area={[260, 60]} position={[0, 0, -90]} maxH={90} />
       {/* crater rim */}
       <mesh position={[0, -0.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[6, 10, 32]} />

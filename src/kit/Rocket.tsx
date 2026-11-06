@@ -11,7 +11,7 @@ export const CorpRocket: React.FC<{position?: [number, number, number]; rotation
     {/* body with front cutaway */}
     <mesh position={[0, 6, 0]}>
       <cylinderGeometry args={[3, 3, 12, 48, 1, true, Math.PI * 0.18, Math.PI * 1.64]} />
-      <meshToonMaterial color="#eef1f5" side={THREE.DoubleSide} />
+      <meshToonMaterial color="#c9ced6" side={THREE.DoubleSide} />
     </mesh>
     {/* red bands */}
     {[1.2, 10.8].map((y) => (
