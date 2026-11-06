@@ -114,7 +114,7 @@ export const SamScene: React.FC = () => {
       <Box size={[0.1, 4.2, 10]} position={[-5, 2.1, 0]} color="#e9e5dc" />
       <Box size={[0.1, 4.2, 10]} position={[6, 2.1, 0]} color="#e9e5dc" />
       <Box size={[12, 0.1, 10]} position={[0, 4.2, 0]} color="#f2efe8" />
-      <CanvasPlane w={2.4} h={0.6} px={200} position={[0, 3.6, 4.9]} rotation={[0, Math.PI, 0]} animate={false} draw={(ctx, w, h) => drawCenteredText(ctx, 'OpenAI', w, h, DISPLAY, h * 0.7, '#111')} />
+      <CanvasPlane w={2.4} h={0.6} px={200} position={[0, 3.6, 4.9]} doubleSide={false} animate={false} draw={(ctx, w, h) => drawCenteredText(ctx, 'OpenAI', w, h, DISPLAY, h * 0.7, '#111')} />
       {/* SaaS wall screens (left) */}
       {SAAS.map((n, i) => {
         const row = Math.floor(i / 3), col = i % 3;
