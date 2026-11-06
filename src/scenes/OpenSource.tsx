@@ -1,4 +1,5 @@
 import React from 'react';
+import * as THREE from 'three';
 import {Stage, CameraRig, Lights, CamKey} from '../kit/Stage';
 import {useSongTime} from '../kit/song';
 import {RocketCar, SEATS} from '../kit/RocketCar';
@@ -213,6 +214,15 @@ export const SlowmoScene: React.FC = () => {
     return [p[0] / l, 0, p[2] / l];
   };
   const oL = outward(linusHead), oR = outward(reaperHead);
+  const linusYaw = Math.PI / 2 + 1.3;
+  const linusFace = rotY([Math.sin(linusYaw), 0, Math.cos(linusYaw)], phi);
+  const linusSide: V3s = [-linusFace[2], 0, linusFace[0]];
+  const linusHeadW: V3s = [linusHead[0] - linusFace[2] * 0.12, carPos[1] + 0.55 + 0.72, linusHead[2] + linusFace[0] * 0.12];
+  // exact world position of Linus's face (seat + seated head height + face offset), through the car's full rotation
+  const carEuler = new THREE.Euler(after ? -Math.min(0.9, (T - 148.6) * 0.8) : 0, phi, after ? 0 : -0.25);
+  const faceLocal = new THREE.Vector3(SEATS.linus[0] + 0.2 * Math.sin(linusYaw), SEATS.linus[1] + 0.97, SEATS.linus[2] + 0.2 * Math.cos(linusYaw)).applyEuler(carEuler);
+  const faceW: V3s = [carPos[0] + faceLocal.x, carPos[1] + faceLocal.y, carPos[2] + faceLocal.z];
+  const faceDir = new THREE.Vector3(Math.sin(linusYaw), 0, Math.cos(linusYaw)).applyEuler(carEuler);
   // camera per beat
   let camPos: V3s, camLook: V3s, fov = 45;
   if (T < 140.6) {
@@ -272,9 +282,22 @@ export const SlowmoScene: React.FC = () => {
       <RocketCar position={carPos} rotation={[after ? -Math.min(0.9, (T - 148.6) * 0.8) : 0, phi, after ? 0 : -0.25]} flame={1 + 0.3 * Math.sin(fv * 1.3)}>
         <Riders t={fv} linusMask={maskOff > 0 ? 0 : 1} linusPose={T > 143.2 && T < 145.4 ? 'throw' : T > 140.6 && T < 145.4 ? 'look' : 'sit'} reaperPose={T > 145.4 && T < 148 ? 'throw' : 'sit'} cheer={after} />
       </RocketCar>
-      {/* the Anonymous mask tumbling off in slow-mo */}
+      {/* the Anonymous mask peels off his face toward camera and tumbles up/aside in slow-mo */}
       {maskOff > 0 && maskOff < 1 ? (
-        <CanvasPlane w={0.4} h={0.5} px={300} lit position={add(linusHead, [oL[0] * maskOff * 0.8, 0.1 + maskOff * 0.5 - maskOff * maskOff * 1.4, oL[2] * maskOff * 0.8])} rotation={[maskOff * 2, maskOff * 3, maskOff]} animate={false} draw={(ctx, w, h) => drawFawkes(ctx, w, h, {pale: true})} />
+        <CanvasPlane
+          w={0.4}
+          h={0.5}
+          px={300}
+          lit
+          position={[
+            faceW[0] + faceDir.x * (0.06 + maskOff * 1.1) + linusSide[0] * maskOff * 0.7,
+            faceW[1] + faceDir.y * 0.06 + Math.sin(maskOff * Math.PI) * 0.45 - maskOff * 0.2,
+            faceW[2] + faceDir.z * (0.06 + maskOff * 1.1) + linusSide[2] * maskOff * 0.7,
+          ]}
+          rotation={[maskOff * 1.6, Math.atan2(faceDir.x, faceDir.z) + maskOff * 2.2, -0.25 + maskOff * 0.9]}
+          animate={false}
+          draw={(ctx, w, h) => drawFawkes(ctx, w, h, {pale: true})}
+        />
       ) : null}
       {/* grenades arcing in slow-mo */}
       {grenadeP > 0 && grenadeP < 1
