@@ -66,9 +66,6 @@ export const CelebrationScene: React.FC = () => {
                 <meshBasicMaterial color={i % 2 ? '#ff2bd6' : '#00e5ff'} toneMapped={false} />
               </mesh>
             ))}
-            {[0.3, 0.55, 0.8].map((k) => (
-              <Box key={k} size={[t.w * 0.3, 0.2, 0.1]} position={[t.w * 0.2, t.h * k, t.w / 2 + 0.05]} color="#2a2a2a" />
-            ))}
             <LogoBadge name={t.logo} size={t.w * 0.7} position={[0, t.h * 0.82, t.w / 2 + 0.08]} />
             
           </group>
